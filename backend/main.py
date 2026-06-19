@@ -1,5 +1,6 @@
 from fastapi import FastAPI, UploadFile, File
 from services.pdf_service import extract_text_from_pdf
+from services.ai_service import check_ai
 import os
 
 app = FastAPI()
@@ -49,3 +50,7 @@ def health():
         "status": "running",
         "service": "NyayaAI"
     }
+
+@app.get("/ai-status")
+def ai_status():
+    return check_ai()
