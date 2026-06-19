@@ -27,7 +27,6 @@ async def upload_pdf(file: UploadFile = File(...)):
     }
 
 
-
 @app.post("/extract-text")
 async def extract_text(file: UploadFile = File(...)):
 
@@ -41,4 +40,12 @@ async def extract_text(file: UploadFile = File(...)):
     return {
         "filename": file.filename,
         "text": extracted_text[:3000]
+    }
+
+
+@app.get("/health")
+def health():
+    return {
+        "status": "running",
+        "service": "NyayaAI"
     }
