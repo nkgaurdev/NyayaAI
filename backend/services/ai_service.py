@@ -1,10 +1,6 @@
-import os
-from dotenv import load_dotenv
 from langchain_groq import ChatGroq
 from langchain_core.messages import HumanMessage
-
-# Load environment variables from .env
-load_dotenv()
+import os
 
 def analyze_document(text):
 
@@ -13,29 +9,37 @@ def analyze_document(text):
         api_key=os.getenv("GROQ_API_KEY")
     )
 
-    response = llm.invoke([
-        HumanMessage(
-            content=f"""
-You are an AI legal assistant for gig workers.
+    prompt = f"""
+You are NyayaAI, an AI legal assistant for gig workers.
 
-Analyze the following document and provide:
+Analyze the following contract or document.
 
-1. Summary of the document
-2. Important clauses
-3. Potential risks for the worker
-4. Rights that the worker should know
-5. Simple explanation in plain English
+Return:
+
+# 1. Document Summary
+
+# 2. Potentially Unfair Clauses
+List clauses that may be harmful to workers.
+
+# 3. Worker Rights Affected
+Explain what rights could be impacted.
+
+# 4. Risk Level
+Low / Medium / High
+
+# 5. Recommended Action
+What should the worker do?
+
+# 6. Plain English Explanation
+Explain everything in very simple language.
 
 Document:
 
 {text[:5000]}
 """
-        )
+
+    response = llm.invoke([
+        HumanMessage(content=prompt)
     ])
 
     return response.content
-
-def check_ai():
-    return {
-        "ai_status": "configured"
-    }
