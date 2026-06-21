@@ -1,3 +1,4 @@
+import json
 from services.ai_service import analyze_document
 from fastapi import FastAPI, UploadFile, File
 from dotenv import load_dotenv

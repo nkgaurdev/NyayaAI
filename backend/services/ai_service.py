@@ -1,6 +1,9 @@
+import json
+import os
+
 from langchain_groq import ChatGroq
 from langchain_core.messages import HumanMessage
-import os
+
 
 def analyze_document(text):
 
@@ -10,53 +13,33 @@ def analyze_document(text):
     )
 
     prompt = f"""
-You are NyayaAI, an AI legal assistant for gig workers.
+You are NyayaAI.
 
-Analyze the document and return your response STRICTLY using the following structure.
+Return ONLY valid JSON.
 
-SUMMARY:
-<summary here>
+Do not return markdown.
+Do not return explanations.
+Do not return code fences.
 
-ISSUES:
-[
+Return this schema exactly:
+
 {{
-"name":"Worker Misclassification",
-"severity":"High",
-"reason":"..."
-}},
-{{
-"name":"Unilateral Termination",
-"severity":"Medium",
-"reason":"..."
+  "summary": "",
+  "issues": [
+    {{
+      "name": "",
+      "severity": "",
+      "reason": ""
+    }}
+  ],
+  "worker_rights": "",
+  "risk_score": 0,
+  "risk_level": "",
+  "recommendations": "",
+  "plain_english": ""
 }}
-]
 
-WORKER_RIGHTS:
-<rights affected>
-
-RISK_SCORE:
-<number from 0-100>
-
-RISK_LEVEL:
-Low / Medium / High
-
-RECOMMENDATIONS:
-<recommended actions>
-
-PLAIN_ENGLISH:
-<simple explanation>
-
-Check specifically for:
-
-1. Worker Misclassification
-2. Unilateral Termination
-3. Payment Deductions
-4. Arbitration Clauses
-5. Liability Transfer
-6. Data Ownership Concerns
-7. Policy Changes Without Consent
-
-Document:
+Analyze this document:
 
 {text[:5000]}
 """
@@ -65,4 +48,11 @@ Document:
         HumanMessage(content=prompt)
     ])
 
-    return response.content
+    try:
+        return json.loads(response.content)
+
+    except Exception:
+        return {
+            "error": "Invalid JSON returned by model",
+            "raw_response": response.content
+        }
