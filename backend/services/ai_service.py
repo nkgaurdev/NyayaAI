@@ -29,7 +29,8 @@ Return this schema exactly:
     {{
       "name": "",
       "severity": "",
-      "reason": ""
+      "reason": "",
+      "evidence": ""
     }}
   ],
   "worker_rights": "",
@@ -38,6 +39,14 @@ Return this schema exactly:
   "recommendations": "",
   "plain_english": ""
 }}
+
+For every issue, provide the exact clause or sentence from the document that triggered the issue.
+
+Store it in the evidence field.
+
+Do not invent evidence.
+
+Only quote text found in the document.
 
 Analyze this document:
 
