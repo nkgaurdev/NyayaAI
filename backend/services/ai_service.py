@@ -34,8 +34,6 @@ Return this schema exactly:
     }}
   ],
   "worker_rights": "",
-  "risk_score": 0,
-  "risk_level": "",
   "recommendations": "",
   "plain_english": ""
 }}
@@ -58,9 +56,56 @@ Analyze this document:
     ])
 
     try:
-        return json.loads(response.content)
+
+        analysis = json.loads(response.content)
+
+        high_count = 0
+        medium_count = 0
+        low_count = 0
+
+        for issue in analysis.get("issues", []):
+
+            severity = issue.get("severity", "").lower()
+
+            if severity == "high":
+                high_count += 1
+
+            elif severity == "medium":
+                medium_count += 1
+
+            elif severity == "low":
+                low_count += 1
+
+        risk_score = (
+            high_count * 20 +
+            medium_count * 10 +
+            low_count * 5
+        )
+
+        risk_score = min(risk_score, 100)
+
+        if risk_score >= 70:
+            risk_level = "High"
+
+        elif risk_score >= 40:
+            risk_level = "Medium"
+
+        else:
+            risk_level = "Low"
+
+        analysis["risk_score"] = risk_score
+        analysis["risk_level"] = risk_level
+
+        analysis["score_reason"] = (
+            f"{high_count} High + "
+            f"{medium_count} Medium + "
+            f"{low_count} Low issues detected"
+        )
+
+        return analysis
 
     except Exception:
+
         return {
             "error": "Invalid JSON returned by model",
             "raw_response": response.content
