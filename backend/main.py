@@ -81,6 +81,8 @@ async def analyze_pdf(file: UploadFile = File(...)):
     )
 
     return {
-        "filename": file.filename,
-        "analysis": analysis
-    }
+    "filename": file.filename,
+    "analysis": analysis,
+    "document_length": len(extracted_text),
+    "status": "analyzed"
+}

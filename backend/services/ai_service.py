@@ -12,32 +12,41 @@ def analyze_document(text):
     prompt = f"""
 You are NyayaAI, an AI legal assistant for gig workers.
 
-Analyze the document and return EXACTLY in the following format.
+Analyze the document and return your response STRICTLY using the following structure.
 
-# Document Summary
+SUMMARY:
+<summary here>
 
-# Detected Issues
+ISSUES:
+[
+{{
+"name":"Worker Misclassification",
+"severity":"High",
+"reason":"..."
+}},
+{{
+"name":"Unilateral Termination",
+"severity":"Medium",
+"reason":"..."
+}}
+]
 
-For each issue provide:
+WORKER_RIGHTS:
+<rights affected>
 
-Issue Name
+RISK_SCORE:
+<number from 0-100>
 
-Severity:
-🔴 High
-🟡 Medium
-🟢 Low
+RISK_LEVEL:
+Low / Medium / High
 
-Reason
+RECOMMENDATIONS:
+<recommended actions>
 
-Use these severity indicators:
+PLAIN_ENGLISH:
+<simple explanation>
 
-🔴 = High Risk
-🟡 = Medium Risk
-🟢 = Low Risk
-
-Always include the emoji before the severity.
-
-Specifically check for:
+Check specifically for:
 
 1. Worker Misclassification
 2. Unilateral Termination
@@ -46,18 +55,6 @@ Specifically check for:
 5. Liability Transfer
 6. Data Ownership Concerns
 7. Policy Changes Without Consent
-
-# Worker Rights Affected
-
-# Risk Score
-Give a score from 0 to 100.
-
-# Risk Level
-Low / Medium / High
-
-# Recommended Actions
-
-# Plain English Explanation
 
 Document:
 
