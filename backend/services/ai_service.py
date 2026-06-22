@@ -102,11 +102,17 @@ Analyze this document:
         analysis["risk_score"] = risk_score
         analysis["risk_level"] = risk_level
 
+        analysis["high_issues"] = high_count
+        analysis["medium_issues"] = medium_count
+        analysis["low_issues"] = low_count
+
         analysis["score_reason"] = (
             f"{high_count} High + "
             f"{medium_count} Medium + "
             f"{low_count} Low issues detected"
         )
+
+        
 
         return analysis
 

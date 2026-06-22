@@ -4,7 +4,10 @@ from fastapi import FastAPI, UploadFile, File
 from dotenv import load_dotenv
 
 load_dotenv()
-from services.pdf_service import extract_text_from_pdf
+from services.pdf_service import (
+    extract_text_from_pdf,
+    extract_pages_from_pdf
+)
 from services.ai_service import analyze_document
 import os
 
@@ -73,17 +76,24 @@ async def analyze_pdf(file: UploadFile = File(...)):
     with open(file_path, "wb") as buffer:
         buffer.write(await file.read())
 
-    extracted_text = extract_text_from_pdf(
+    pages = extract_pages_from_pdf(
         file_path
-    )
+   )
+
+    full_text = ""
+
+    for page in pages:
+        full_text += page["text"] + "\n"
 
     analysis = analyze_document(
-        extracted_text
-    )
+        full_text
+   )
+    
+    analysis["page_count"] = len(pages)
 
     return {
     "filename": file.filename,
     "analysis": analysis,
-    "document_length": len(extracted_text),
+    "document_length": len(full_text),
     "status": "analyzed"
 }
