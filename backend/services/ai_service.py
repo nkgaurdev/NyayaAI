@@ -3,6 +3,7 @@ import os
 
 from langchain_groq import ChatGroq
 from langchain_core.messages import HumanMessage
+from services.rights_service import RIGHTS_MAP
 
 
 def analyze_document(text):
@@ -24,18 +25,18 @@ Do not return code fences.
 Return this schema exactly:
 
 {{
-  "summary": "",
-  "issues": [
-    {{
-      "name": "",
-      "severity": "",
-      "reason": "",
-      "evidence": ""
-    }}
-  ],
-  "worker_rights": "",
-  "recommendations": "",
-  "plain_english": ""
+    "summary": "",
+    "issues": [
+        {{
+            "name": "",
+            "severity": "",
+            "reason": "",
+            "evidence": ""
+        }}
+    ],
+    "worker_rights": "",
+    "recommendations": "",
+    "plain_english": ""
 }}
 
 For every issue, provide the exact clause or sentence from the document that triggered the issue.
@@ -65,6 +66,13 @@ Analyze this document:
 
         for issue in analysis.get("issues", []):
 
+            issue_name = issue.get("name", "")
+
+            issue["rights_impact"] = RIGHTS_MAP.get(
+                issue_name,
+                ["Worker Rights Review Required"]
+            )
+
             severity = issue.get("severity", "").lower()
 
             if severity == "high":
@@ -86,10 +94,8 @@ Analyze this document:
 
         if risk_score >= 70:
             risk_level = "High"
-
         elif risk_score >= 40:
             risk_level = "Medium"
-
         else:
             risk_level = "Low"
 
