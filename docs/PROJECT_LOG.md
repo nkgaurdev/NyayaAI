@@ -72,3 +72,30 @@
 * Generate risk assessment reports
 * Create frontend interface
 * Deploy MVP
+
+
+## Day 3 - 20 June 2026
+
+- Integrated Groq Llama 3.3 70B model
+- Created AI document analysis service
+- Connected PDF extraction pipeline to AI analysis
+- Tested AI analysis using sample contracts
+- Analyzed real Uber Platform Access Agreement (27 pages)
+- Added worker rights detection
+- Added contract risk analysis
+- Added plain-English explanation for workers
+- Successfully deployed and tested end-to-end workflow
+- Pushed Commit #12: Worker Rights & Contract Risk Analysis
+
+
+## Day 4 - 21 June 2026
+
+- Added evidence-based clause extraction
+- Extracted supporting contract clauses for detected risks
+- Implemented structured JSON responses
+- Added explainable risk scoring engine
+- Calculated risk score based on issue severity
+- Added risk level classification (Low/Medium/High)
+- Added score reasoning for transparency
+- Tested system using Uber Platform Access Agreement
+- Successfully generated evidence-backed contract risk assessments
