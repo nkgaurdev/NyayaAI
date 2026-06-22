@@ -76,6 +76,18 @@ Analyze this document:
             severity = issue.get("severity", "").lower()
 
             if severity == "high":
+               issue["severity_score"] = 3
+
+            elif severity == "medium":
+               issue["severity_score"] = 2
+
+            elif severity == "low":
+               issue["severity_score"] = 1
+
+            else:
+               issue["severity_score"] = 0
+
+            if severity == "high":
                 high_count += 1
 
             elif severity == "medium":
