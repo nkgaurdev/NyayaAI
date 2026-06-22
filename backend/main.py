@@ -1,6 +1,7 @@
 import json
 from services.ai_service import analyze_document
 from fastapi import FastAPI, UploadFile, File
+from services.comparison_service import compare_contracts
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -97,3 +98,43 @@ async def analyze_pdf(file: UploadFile = File(...)):
     "document_length": len(full_text),
     "status": "analyzed"
 }
+
+@app.post("/compare-contracts")
+async def compare_contracts_endpoint(
+
+    file1: UploadFile = File(...),
+    file2: UploadFile = File(...)
+):
+
+    path1 = os.path.join(
+        UPLOAD_DIR,
+        file1.filename
+    )
+
+    path2 = os.path.join(
+        UPLOAD_DIR,
+        file2.filename
+    )
+
+    with open(path1, "wb") as buffer:
+        buffer.write(await file1.read())
+
+    with open(path2, "wb") as buffer:
+        buffer.write(await file2.read())
+
+    text1 = extract_text_from_pdf(path1)
+    text2 = extract_text_from_pdf(path2)
+
+    analysis1 = analyze_document(text1)
+    analysis2 = analyze_document(text2)
+
+    comparison = compare_contracts(
+        analysis1,
+        analysis2
+    )
+
+    return {
+        "contract1": analysis1,
+        "contract2": analysis2,
+        "comparison": comparison
+    }
