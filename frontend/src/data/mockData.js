@@ -1,0 +1,47 @@
+export const MOCK_ANALYSIS = {
+  documentTitle: "SaaS Enterprise License Agreement — Acme Corp",
+  uploadedAt: "2026-01-15T10:30:00Z",
+  pageCount: 42,
+  overallRiskScore: 7.2,
+  metrics: {
+    clausesAnalyzed: 142,
+    issuesFound: 23,
+    complianceScore: 68,
+    processingTime: "4.2s",
+  },
+  riskCategories: [
+    { name: "Data Privacy", score: 8.5, severity: "critical", description: "Broad data collection clauses with insufficient anonymization guarantees. Section 4.2 permits unrestricted third-party data sharing.", clause: "§4.2, §4.5, §7.1" },
+    { name: "Termination Rights", score: 7.8, severity: "high", description: "Unilateral termination clause favoring the provider with only 15-day notice. No cure period for material breach.", clause: "§12.1, §12.3" },
+    { name: "Liability Caps", score: 6.9, severity: "high", description: "Liability limited to 3 months of fees, significantly below industry standard of 12 months.", clause: "§15.2" },
+    { name: "IP Assignment", score: 5.4, severity: "medium", description: "Ambiguous IP ownership for customizations and integrations developed during the contract period.", clause: "§8.1, §8.4" },
+    { name: "Indemnification", score: 4.2, severity: "medium", description: "Asymmetric indemnification obligations with broader scope for licensee.", clause: "§14.1, §14.2" },
+    { name: "Force Majeure", score: 2.1, severity: "low", description: "Standard force majeure clause with reasonable scope and duration limitations.", clause: "§18.3" },
+  ],
+  rightsImpact: [
+    { right: "Right to Data Portability", status: "violated", impact: "critical", detail: "No provision for data export in machine-readable format upon termination.", recommendation: "Add clause requiring CSV/JSON export within 30 days of termination." },
+    { right: "Right to Erasure", status: "partial", impact: "high", detail: "Data deletion timeline extends to 180 days, exceeding GDPR's 30-day requirement.", recommendation: "Negotiate deletion timeline to 30 days with certification of destruction." },
+    { right: "Right to Access", status: "compliant", impact: "low", detail: "Adequate provisions for data subject access requests with 15-day response SLA.", recommendation: "Consider reducing response time to 10 days for premium compliance." },
+    { right: "Right to Rectification", status: "partial", impact: "medium", detail: "Limited self-service correction capabilities. Provider retains discretion on corrections.", recommendation: "Require real-time self-service correction API access." },
+    { right: "Right to Privacy", status: "violated", impact: "critical", detail: "Telemetry data collection exceeds stated purpose. No opt-out mechanism for analytics.", recommendation: "Limit telemetry to operational metrics. Add granular opt-out controls." },
+    { right: "Non-discrimination", status: "compliant", impact: "low", detail: "No discriminatory clauses detected in service provisioning terms.", recommendation: "No action required." },
+  ],
+  evidence: [
+    { id: "E001", type: "clause", title: "Unrestricted Data Sharing", source: "Section 4.2, Page 8", severity: "critical", text: "Provider may share, transfer, or disclose User Data to any affiliated entity, partner, or third-party service provider without prior written consent of the Licensee, provided such sharing is deemed necessary for service delivery or improvement.", annotation: "This clause effectively removes user control over data sharing. The phrase 'deemed necessary' provides excessive discretion to the Provider." },
+    { id: "E002", type: "clause", title: "Unilateral Termination", source: "Section 12.1, Page 22", severity: "high", text: "Provider reserves the right to terminate this Agreement at any time, for any reason, by providing fifteen (15) calendar days written notice to the Licensee.", annotation: "15-day notice is insufficient for enterprise migration. Industry standard is 90 days with transition assistance." },
+    { id: "E003", type: "pattern", title: "Liability Cap Below Standard", source: "Section 15.2, Page 28", severity: "high", text: "In no event shall Provider's aggregate liability exceed the total fees paid by Licensee in the three (3) month period immediately preceding the claim.", annotation: "3-month cap is 75% below the industry standard of 12 months. This significantly limits recourse for major service failures." },
+    { id: "E004", type: "omission", title: "Missing Data Breach Notification", source: "Not Found", severity: "critical", text: "No clause found addressing data breach notification obligations, timelines, or remediation procedures.", annotation: "GDPR Article 33 requires 72-hour notification. The absence of this clause creates significant regulatory exposure." },
+    { id: "E005", type: "clause", title: "Broad IP Assignment", source: "Section 8.1, Page 14", severity: "medium", text: "Any modifications, customizations, or derivative works created during the term shall be the exclusive property of the Provider.", annotation: "This could include valuable business logic and configurations built by the Licensee. Negotiate for joint ownership or licensee retention." },
+  ],
+  comparison: {
+    documentA: "Current Agreement v2.1",
+    documentB: "Industry Standard Template",
+    changes: [
+      { section: "Data Privacy", status: "worse", detail: "Current agreement allows broader data sharing than industry standard", delta: "-34%" },
+      { section: "Liability", status: "worse", detail: "Cap is 3 months vs. standard 12 months", delta: "-75%" },
+      { section: "Termination", status: "worse", detail: "Notice period is 15 days vs. standard 90 days", delta: "-83%" },
+      { section: "SLA Guarantees", status: "better", detail: "99.95% uptime vs. standard 99.9%", delta: "+0.05%" },
+      { section: "Support Response", status: "same", detail: "24-hour response time matches industry standard", delta: "0%" },
+      { section: "Force Majeure", status: "better", detail: "More restrictive definition limits provider escape clauses", delta: "+15%" },
+    ],
+  },
+};
