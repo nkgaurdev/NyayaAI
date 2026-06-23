@@ -31,7 +31,8 @@ Return this schema exactly:
             "name": "",
             "severity": "",
             "reason": "",
-            "evidence": ""
+            "evidence": "",
+            "recommendation": ""
         }}
     ],
     "worker_rights": "",
@@ -39,15 +40,17 @@ Return this schema exactly:
     "plain_english": ""
 }}
 
-For every issue, provide the exact clause or sentence from the document that triggered the issue.
+Rules:
 
-Store it in the evidence field.
+1. Severity must be High, Medium, or Low.
+2. Evidence must be copied exactly from the contract.
+3. Never invent evidence.
+4. Recommendation must be practical and worker-friendly.
+5. Plain English explanation must be understandable by a non-lawyer.
+6. Only report genuinely important worker-related concerns.
+7. Avoid creating duplicate issues that mean the same thing.
 
-Do not invent evidence.
-
-Only quote text found in the document.
-
-Analyze this document:
+Analyze this contract:
 
 {text[:5000]}
 """
@@ -64,50 +67,62 @@ Analyze this document:
         medium_count = 0
         low_count = 0
 
+        affected_rights = set()
+
         for issue in analysis.get("issues", []):
 
             issue_name = issue.get("name", "")
 
-            issue["rights_impact"] = RIGHTS_MAP.get(
+            rights = RIGHTS_MAP.get(
                 issue_name,
                 ["Worker Rights Review Required"]
             )
 
-            severity = issue.get("severity", "").lower()
+            issue["rights_impact"] = rights
+
+            for right in rights:
+                affected_rights.add(right)
+
+            severity = issue.get(
+                "severity",
+                ""
+            ).lower()
 
             if severity == "high":
-               issue["severity_score"] = 3
-
-            elif severity == "medium":
-               issue["severity_score"] = 2
-
-            elif severity == "low":
-               issue["severity_score"] = 1
-
-            else:
-               issue["severity_score"] = 0
-
-            if severity == "high":
+                issue["severity_score"] = 3
                 high_count += 1
 
             elif severity == "medium":
+                issue["severity_score"] = 2
                 medium_count += 1
 
             elif severity == "low":
+                issue["severity_score"] = 1
                 low_count += 1
 
+            else:
+                issue["severity_score"] = 0
+
+            if not issue.get("recommendation"):
+                issue["recommendation"] = (
+                    "Review this clause carefully and seek clarification before accepting the agreement."
+                )
+
+        # Better Risk Scoring
         risk_score = (
-            high_count * 20 +
-            medium_count * 10 +
-            low_count * 5
+            high_count * 35 +
+            medium_count * 20 +
+            low_count * 10
         )
 
         risk_score = min(risk_score, 100)
 
-        if risk_score >= 70:
+        if risk_score >= 75:
             risk_level = "High"
-        elif risk_score >= 40:
+
+        elif risk_score >= 35:
             risk_level = "Medium"
+
         else:
             risk_level = "Low"
 
@@ -124,13 +139,45 @@ Analyze this document:
             f"{low_count} Low issues detected"
         )
 
-        
+        analysis["affected_rights"] = sorted(
+            list(affected_rights)
+        )
+
+        issue_names = [
+            f"• {issue.get('name', 'Unknown Issue')}"
+            for issue in analysis.get("issues", [])
+        ]
+
+        analysis["appeal_letter"] = f"""
+Dear Platform Support,
+
+After reviewing this agreement using NyayaAI,
+I identified several clauses that may affect my
+rights, protections, and working conditions.
+
+Key concerns include:
+
+{chr(10).join(issue_names)}
+
+I respectfully request clarification regarding
+these clauses and their practical implications.
+
+Please provide additional information about
+worker protections, dispute resolution options,
+and available support mechanisms.
+
+Thank you for your assistance.
+
+Sincerely,
+
+Worker
+"""
 
         return analysis
 
     except Exception:
 
-        return {
+        return {{
             "error": "Invalid JSON returned by model",
             "raw_response": response.content
-        }
+        }}

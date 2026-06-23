@@ -40,5 +40,72 @@ RIGHTS_MAP = {
     "Policy Changes Without Consent": [
         "Informed Consent",
         "Contract Transparency"
+    ],
+
+    "Lack of Employment Benefits": [
+        "Healthcare Benefits",
+        "Paid Leave",
+        "Employee Benefits"
+    ],
+
+    "Platform Deactivation": [
+        "Job Security",
+        "Fair Treatment",
+        "Appeal Rights"
+    ],
+
+    "Account Suspension": [
+        "Job Security",
+        "Appeal Rights"
+    ],
+
+    "Rating System Risks": [
+        "Fair Evaluation",
+        "Job Security"
+    ],
+
+    "Discrimination Policy": [
+        "Equal Opportunity",
+        "Fair Treatment"
+    ],
+
+    "Worker Monitoring": [
+        "Privacy Rights",
+        "Data Protection"
+    ],
+
+    "Surveillance Practices": [
+        "Privacy Rights",
+        "Data Protection"
+    ],
+
+    "Late Payment Risk": [
+        "Fair Compensation",
+        "Payment Transparency"
+    ],
+
+    "Excessive Liability": [
+        "Financial Protection",
+        "Fair Liability Allocation"
+    ],
+
+    "Non-Compete Restrictions": [
+        "Freedom of Employment",
+        "Economic Opportunity"
+    ],
+
+    "Automatic Termination": [
+        "Job Security",
+        "Fair Treatment"
+    ],
+
+    "Unfair Penalties": [
+        "Fair Compensation",
+        "Contract Fairness"
+    ],
+
+    "Dispute Resolution Limitations": [
+        "Access to Legal Remedies",
+        "Fair Treatment"
     ]
 }
