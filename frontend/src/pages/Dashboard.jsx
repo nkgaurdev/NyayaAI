@@ -1,27 +1,18 @@
-export default function Navbar() {
+import Navbar from "../components/Navbar";
+import HeroUploadSection from "../components/hero/HeroUploadSection";
+
+export default function Dashboard() {
   return (
-    <nav className="flex justify-between items-center py-8">
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-slate-950 text-white">
 
-      <h1 className="text-2xl font-bold">
-        NyayaAI
-      </h1>
+      <div className="max-w-7xl mx-auto px-8">
 
-      <div className="flex gap-6 items-center">
+        <Navbar />
 
-        <button className="text-slate-300">
-          Features
-        </button>
-
-        <button className="text-slate-300">
-          Compare
-        </button>
-
-        <button className="bg-blue-600 px-5 py-2 rounded-xl">
-          Upload
-        </button>
+        <HeroUploadSection />
 
       </div>
 
-    </nav>
+    </div>
   );
 }
