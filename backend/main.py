@@ -1,4 +1,5 @@
 import json
+from fastapi.middleware.cors import CORSMiddleware
 from services.ai_service import analyze_document
 from fastapi import FastAPI, UploadFile, File
 from services.comparison_service import compare_contracts
@@ -13,6 +14,14 @@ from services.ai_service import analyze_document
 import os
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 UPLOAD_DIR = "uploads"
 
