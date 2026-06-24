@@ -37,4 +37,4 @@ def extract_pages_from_pdf(file_path):
                 "text": page_text
             })
 
-    return pages
+    return pages 

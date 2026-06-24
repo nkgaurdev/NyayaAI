@@ -85,16 +85,42 @@ export default function UploadZone({ setAnalysis }) {
         </button>
 
         {selectedFile && (
-          <div className="mt-6 p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
-            <p className="text-emerald-400 font-medium">
-              Selected File
-            </p>
+  <div className="mt-6 p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
 
-            <p className="text-white mt-1 break-all">
-              {selectedFile.name}
-            </p>
-          </div>
-        )}
+    <p className="text-emerald-400 font-medium">
+      Selected File
+    </p>
+
+    <p className="text-white mt-1 break-all">
+      {selectedFile.name}
+    </p>
+
+    <button
+      onClick={() => {
+        setSelectedFile(null);
+        setAnalysis(null);
+        setCompleted(false);
+
+        if (fileRef.current) {
+          fileRef.current.value = "";
+        }
+      }}
+      className="
+        mt-4
+        px-4
+        py-2
+        rounded-lg
+        bg-red-500/20
+        text-red-400
+        hover:bg-red-500/30
+        transition
+      "
+    >
+      Choose Another Contract
+    </button>
+
+  </div>
+)}
 
         {loading && (
           <div className="mt-6">

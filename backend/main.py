@@ -137,6 +137,12 @@ async def compare_contracts_endpoint(
     analysis1 = analyze_document(text1)
     analysis2 = analyze_document(text2)
 
+    print("CONTRACT 1")
+    print(analysis1)
+
+    print("CONTRACT 2")
+    print(analysis2)
+
     comparison = compare_contracts(
         analysis1,
         analysis2
