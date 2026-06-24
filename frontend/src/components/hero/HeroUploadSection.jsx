@@ -96,23 +96,49 @@ export default function HeroUploadSection() {
               Comparison Result
             </h2>
 
-            <div className="grid md:grid-cols-2 gap-4">
+            <div className="space-y-6">
 
-              <div className="bg-white/5 p-5 rounded-xl">
-                <h3>Contract 1 Score</h3>
-                <p className="text-5xl mt-2">
-                  {comparison.contract1_score}
-                </p>
-              </div>
+  <div className="bg-white/5 p-5 rounded-xl">
 
-              <div className="bg-white/5 p-5 rounded-xl">
-                <h3>Contract 2 Score</h3>
-                <p className="text-5xl mt-2">
-                  {comparison.contract2_score}
-                </p>
-              </div>
+    <div className="flex justify-between mb-3">
+      <h3>Contract 1 Risk Score</h3>
+      <span className="font-bold text-2xl">
+        {comparison.contract1_score}
+      </span>
+    </div>
 
-            </div>
+    <div className="w-full bg-white/10 rounded-full h-4">
+      <div
+        className="bg-red-500 h-4 rounded-full transition-all duration-700"
+        style={{
+          width: `${comparison.contract1_score}%`
+        }}
+      />
+    </div>
+
+  </div>
+
+  <div className="bg-white/5 p-5 rounded-xl">
+
+    <div className="flex justify-between mb-3">
+      <h3>Contract 2 Risk Score</h3>
+      <span className="font-bold text-2xl">
+        {comparison.contract2_score}
+      </span>
+    </div>
+
+    <div className="w-full bg-white/10 rounded-full h-4">
+      <div
+        className="bg-blue-500 h-4 rounded-full transition-all duration-700"
+        style={{
+          width: `${comparison.contract2_score}%`
+        }}
+      />
+    </div>
+
+  </div>
+
+</div>
 
             <div className="mt-6 bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-5">
 
@@ -123,6 +149,21 @@ export default function HeroUploadSection() {
               <p className="text-3xl mt-2">
                 {comparison.safer_contract}
               </p>
+
+
+              <div className="mt-6 bg-indigo-500/10 border border-indigo-500/20 rounded-xl p-5">
+
+  <h3 className="text-indigo-400 font-semibold">
+    Score Difference
+  </h3>
+
+  <p className="text-3xl mt-2">
+    {comparison.score_difference}
+  </p>
+
+</div>
+
+
 
             </div>
           <div className="mt-6 bg-white/5 rounded-xl p-5">
