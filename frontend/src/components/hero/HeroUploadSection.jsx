@@ -125,7 +125,15 @@ export default function HeroUploadSection() {
               </p>
 
             </div>
+          <div className="mt-6 bg-white/5 rounded-xl p-5">
+  <h3 className="text-lg font-semibold mb-3">
+    Executive Comparison Summary
+  </h3>
 
+  <p className="text-slate-300 whitespace-pre-line">
+    {comparison.comparison_summary}
+  </p>
+</div>
           </div>
 
         </div>

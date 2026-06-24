@@ -5,55 +5,73 @@ from langchain_groq import ChatGroq
 from langchain_core.messages import HumanMessage
 from services.rights_service import RIGHTS_MAP
 
-
 def analyze_document(text):
 
+
     llm = ChatGroq(
-        model="llama-3.3-70b-versatile",
-        api_key=os.getenv("GROQ_API_KEY")
-    )
+    model="llama-3.3-70b-versatile",
+    api_key=os.getenv("GROQ_API_KEY"),
+    temperature=0
+)
 
     prompt = f"""
-You are NyayaAI.
 
-Return ONLY valid JSON.
 
-Do not return markdown.
-Do not return explanations.
-Do not return code fences.
+    You are NyayaAI.
 
-Return this schema exactly:
+    Return ONLY valid JSON.
 
-{{
+    Do not return markdown.
+    Do not return explanations.
+    Do not return code fences.
+
+    Return this schema exactly:
+
+    {{
     "summary": "",
     "issues": [
-        {{
-            "name": "",
-            "severity": "",
-            "reason": "",
-            "evidence": "",
-            "recommendation": ""
-        }}
+    {{
+    "name": "",
+    "severity": "",
+    "reason": "",
+    "evidence": "",
+    "recommendation": ""
+    }}
     ],
     "worker_rights": "",
     "recommendations": "",
     "plain_english": ""
-}}
+    }}
 
-Rules:
+    Rules:
 
-1. Severity must be High, Medium, or Low.
-2. Evidence must be copied exactly from the contract.
-3. Never invent evidence.
-4. Recommendation must be practical and worker-friendly.
-5. Plain English explanation must be understandable by a non-lawyer.
-6. Only report genuinely important worker-related concerns.
-7. Avoid creating duplicate issues that mean the same thing.
+    1. Severity must be High, Medium, or Low.
+    2. Evidence must be copied exactly from the contract.
+    3. Never invent evidence.
+    4. Recommendation must be practical and worker-friendly.
+    5. Plain English explanation must be understandable by a non-lawyer.
+    6. Avoid creating duplicate issues that mean the same thing.
 
-Analyze this contract:
+    Only choose issues from this list:
 
-{text[:5000]}
-"""
+    * Independent Contractor Status
+    * Lack of Employment Benefits
+    * No Guaranteed Income
+    * Unilateral Account Suspension
+    * Rating System
+    * Broad Liability Clause
+    * Arbitration Requirement
+    * Data Privacy Concerns
+
+    Do not invent new issue names.
+
+    If an issue is not clearly present,
+    do not include it.
+
+    Analyze this contract:
+
+    {text[:5000]}
+    """
 
     response = llm.invoke([
         HumanMessage(content=prompt)
@@ -62,6 +80,35 @@ Analyze this contract:
     try:
 
         analysis = json.loads(response.content)
+
+        ALLOWED_ISSUES = {
+            "Independent Contractor Status",
+            "Lack of Employment Benefits",
+            "No Guaranteed Income",
+            "Unilateral Account Suspension",
+            "Rating System",
+            "Broad Liability Clause",
+            "Arbitration Requirement",
+            "Data Privacy Concerns"
+        }
+
+        analysis["issues"] = [
+            issue
+            for issue in analysis.get("issues", [])
+            if issue.get("name") in ALLOWED_ISSUES
+        ]
+
+        print("\n========== AI ANALYSIS ==========")
+        print("Issues Returned:", len(analysis.get("issues", [])))
+
+        for issue in analysis.get("issues", []):
+            print(
+                issue.get("name"),
+                "-",
+                issue.get("severity")
+            )
+
+        print("================================\n")
 
         high_count = 0
         medium_count = 0
@@ -108,21 +155,18 @@ Analyze this contract:
                     "Review this clause carefully and seek clarification before accepting the agreement."
                 )
 
-        # Better Risk Scoring
         risk_score = (
-            high_count * 35 +
-            medium_count * 20 +
-            low_count * 10
-        )
+    high_count * 25 +
+    medium_count * 15 +
+    low_count * 5
+)
 
         risk_score = min(risk_score, 100)
 
         if risk_score >= 75:
             risk_level = "High"
-
         elif risk_score >= 35:
             risk_level = "Medium"
-
         else:
             risk_level = "Low"
 
@@ -148,36 +192,51 @@ Analyze this contract:
             for issue in analysis.get("issues", [])
         ]
 
+        print("\n========== RISK SCORE ==========")
+        print("High Issues:", high_count)
+        print("Medium Issues:", medium_count)
+        print("Low Issues:", low_count)
+        print("Final Risk Score:", risk_score)
+        print("Risk Level:", risk_level)
+        print("================================\n")
+
         analysis["appeal_letter"] = f"""
-Dear Platform Support,
+    ```
 
-After reviewing this agreement using NyayaAI,
-I identified several clauses that may affect my
-rights, protections, and working conditions.
+    Dear Platform Support,
 
-Key concerns include:
+    After reviewing this agreement using NyayaAI,
+    I identified several clauses that may affect my
+    rights, protections, and working conditions.
 
-{chr(10).join(issue_names)}
+    Key concerns include:
 
-I respectfully request clarification regarding
-these clauses and their practical implications.
+    {chr(10).join(issue_names)}
 
-Please provide additional information about
-worker protections, dispute resolution options,
-and available support mechanisms.
+    I respectfully request clarification regarding
+    these clauses and their practical implications.
 
-Thank you for your assistance.
+    Please provide additional information about
+    worker protections, dispute resolution options,
+    and available support mechanisms.
 
-Sincerely,
+    Thank you for your assistance.
 
-Worker
-"""
+    Sincerely,
+
+    Worker
+    """
+
 
         return analysis
 
-    except Exception:
+    except Exception as e:
 
-        return {{
+        print("JSON ERROR:", str(e))
+        print("RAW RESPONSE:", response.content)
+
+        return {
             "error": "Invalid JSON returned by model",
             "raw_response": response.content
-        }}
+        }
+

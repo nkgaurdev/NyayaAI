@@ -137,12 +137,19 @@ async def compare_contracts_endpoint(
     analysis1 = analyze_document(text1)
     analysis2 = analyze_document(text2)
 
-    print("CONTRACT 1")
-    print(analysis1)
 
-    print("CONTRACT 2")
-    print(analysis2)
 
+    print("\n========== CONTRACT 1 ==========")
+    print("Risk Score:", analysis1.get("risk_score"))
+    print("Issues:", len(analysis1.get("issues", [])))
+    print("Issue Names:", [i.get("name") for i in analysis1.get("issues", [])])
+
+    print("\n========== CONTRACT 2 ==========")
+    print("Risk Score:", analysis2.get("risk_score"))
+    print("Issues:", len(analysis2.get("issues", [])))
+    print("Issue Names:", [i.get("name") for i in analysis2.get("issues", [])])
+    print("================================\n")
+    
     comparison = compare_contracts(
         analysis1,
         analysis2
