@@ -4,6 +4,8 @@ from services.ai_service import analyze_document
 from fastapi import FastAPI, UploadFile, File
 from services.comparison_service import compare_contracts
 from dotenv import load_dotenv
+from fastapi.responses import FileResponse
+from services.pdf_report_service import generate_pdf_report
 
 load_dotenv()
 from services.pdf_service import (
@@ -137,7 +139,9 @@ async def compare_contracts_endpoint(
     analysis1 = analyze_document(text1)
     analysis2 = analyze_document(text2)
 
-
+    print("\nTEXT LENGTHS")
+    print(len(text1))
+    print(len(text2))
 
     print("\n========== CONTRACT 1 ==========")
     print("Risk Score:", analysis1.get("risk_score"))
@@ -160,3 +164,36 @@ async def compare_contracts_endpoint(
         "contract2": analysis2,
         "comparison": comparison
     }
+
+@app.post("/download-report")
+async def download_report(
+    file: UploadFile = File(...)
+):
+
+    file_path = os.path.join(
+        UPLOAD_DIR,
+        file.filename
+    )
+
+    with open(file_path, "wb") as buffer:
+        buffer.write(await file.read())
+
+    text = extract_text_from_pdf(file_path)
+
+    analysis = analyze_document(text)
+
+    report_path = os.path.join(
+        UPLOAD_DIR,
+        "NyayaAI_Report.pdf"
+    )
+
+    generate_pdf_report(
+        analysis,
+        report_path
+    )
+
+    return FileResponse(
+        report_path,
+        media_type="application/pdf",
+        filename="NyayaAI_Report.pdf"
+    )

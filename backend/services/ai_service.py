@@ -5,6 +5,17 @@ from langchain_groq import ChatGroq
 from langchain_core.messages import HumanMessage
 from services.rights_service import RIGHTS_MAP
 
+SEVERITY_MAP = {
+    "Independent Contractor Status": "Medium",
+    "Lack of Employment Benefits": "Medium",
+    "No Guaranteed Income": "High",
+    "Unilateral Account Suspension": "High",
+    "Rating System": "Medium",
+    "Broad Liability Clause": "Medium",
+    "Arbitration Requirement": "Medium",
+    "Data Privacy Concerns": "Medium"
+}
+
 def analyze_document(text):
 
 
@@ -45,12 +56,13 @@ def analyze_document(text):
 
     Rules:
 
-    1. Severity must be High, Medium, or Low.
-    2. Evidence must be copied exactly from the contract.
-    3. Never invent evidence.
-    4. Recommendation must be practical and worker-friendly.
-    5. Plain English explanation must be understandable by a non-lawyer.
-    6. Avoid creating duplicate issues that mean the same thing.
+    1. Identify issues only.
+    2. Severity will be assigned by the backend.
+    3. Evidence must be copied exactly from the contract.
+    4. Never invent evidence.
+    5. Recommendation must be practical and worker-friendly.
+    6. Plain English explanation must be understandable by a non-lawyer.
+    7. Avoid creating duplicate issues that mean the same thing.
 
     Only choose issues from this list:
 
@@ -98,6 +110,8 @@ def analyze_document(text):
             if issue.get("name") in ALLOWED_ISSUES
         ]
 
+
+
         print("\n========== AI ANALYSIS ==========")
         print("Issues Returned:", len(analysis.get("issues", [])))
 
@@ -119,6 +133,9 @@ def analyze_document(text):
         for issue in analysis.get("issues", []):
 
             issue_name = issue.get("name", "")
+
+            if issue_name in SEVERITY_MAP:
+                issue["severity"] = SEVERITY_MAP[issue_name]
 
             rights = RIGHTS_MAP.get(
                 issue_name,
@@ -200,33 +217,30 @@ def analyze_document(text):
         print("Risk Level:", risk_level)
         print("================================\n")
 
-        analysis["appeal_letter"] = f"""
-    ```
+        analysis["appeal_letter"] = f"""Dear Platform Support,
 
-    Dear Platform Support,
 
-    After reviewing this agreement using NyayaAI,
-    I identified several clauses that may affect my
-    rights, protections, and working conditions.
+        After reviewing this agreement using NyayaAI,
+        I identified several clauses that may affect my
+        rights, protections, and working conditions.
 
-    Key concerns include:
+        Key concerns include:
 
-    {chr(10).join(issue_names)}
+        {chr(10).join(issue_names)}
 
-    I respectfully request clarification regarding
-    these clauses and their practical implications.
+        I respectfully request clarification regarding
+        these clauses and their practical implications.
 
-    Please provide additional information about
-    worker protections, dispute resolution options,
-    and available support mechanisms.
+        Please provide additional information about
+        worker protections, dispute resolution options,
+        and available support mechanisms.
 
-    Thank you for your assistance.
+        Thank you for your assistance.
 
-    Sincerely,
+        Sincerely,
 
-    Worker
-    """
-
+        Worker
+        """
 
         return analysis
 
@@ -239,4 +253,3 @@ def analyze_document(text):
             "error": "Invalid JSON returned by model",
             "raw_response": response.content
         }
-

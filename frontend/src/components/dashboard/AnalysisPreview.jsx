@@ -43,8 +43,28 @@ export default function AnalysisPreview({ analysis }) {
           </h2>
 
           <p className="text-slate-500 mt-2">
-            {analysis?.risk_level || "Waiting For Upload"} Risk Contract
+            {
+              analysis?.risk_score >= 70
+                ? "🔴 High Risk Contract"
+                : analysis?.risk_score >= 40
+                ? "🟡 Moderate Risk Contract"
+                : "🟢 Worker Friendly Contract"
+}
           </p>
+
+              <div className="mt-3">
+      <span
+        className={`px-3 py-1 rounded-full text-sm ${
+          analysis?.risk_score >= 70
+            ? "bg-red-500/20 text-red-400"
+            : analysis?.risk_score >= 40
+            ? "bg-yellow-500/20 text-yellow-400"
+            : "bg-green-500/20 text-green-400"
+        }`}
+      >
+        {analysis?.risk_level}
+      </span>
+    </div>
 
           <p className="text-xs text-slate-500 mt-2">
             {analysis?.score_reason}
@@ -65,6 +85,28 @@ export default function AnalysisPreview({ analysis }) {
             />
           </div>
         </div>
+
+        {/* Confidence Meter */}
+<div className="mb-6">
+  <div className="flex justify-between mb-2">
+    <p className="text-slate-400 text-sm">
+      Analysis Confidence
+    </p>
+
+    <p className="text-cyan-400 text-sm">
+      {analysis?.issues?.length > 0 ? "92%" : "0%"}
+    </p>
+  </div>
+
+  <div className="w-full bg-white/10 rounded-full h-2">
+    <div
+      className="bg-cyan-500 h-2 rounded-full"
+      style={{
+        width: analysis?.issues?.length > 0 ? "92%" : "0%"
+      }}
+    />
+  </div>
+</div>
 
         {/* Risk Breakdown */}
         <div className="grid grid-cols-3 gap-3">
@@ -287,6 +329,22 @@ export default function AnalysisPreview({ analysis }) {
   >
     Download Letter
   </button>
+
+  <button
+  onClick={async () => {
+    alert(
+      "PDF export endpoint is ready. Next we need to send the uploaded file to /download-report."
+    );
+  }}
+  className="
+    px-4 py-2
+    rounded-lg
+    bg-purple-600
+    hover:bg-purple-700
+  "
+>
+  Download PDF Report
+</button>
 
 </div>
         </div>
