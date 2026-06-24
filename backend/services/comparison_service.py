@@ -36,11 +36,16 @@ Based on overall risk score and issue severity,
 """
 
     return {
-        "contract1_score": score1,
-        "contract2_score": score2,
-        "contract1_issues": issues1,
-        "contract2_issues": issues2,
-        "safer_contract": safer,
-        "score_difference": abs(score1 - score2),
-        "comparison_summary": summary,
-    }
+    "contract1_score": score1,
+    "contract2_score": score2,
+
+    "contract1_issues": contract1.get("issues", []),
+    "contract2_issues": contract2.get("issues", []),
+
+    "contract1_issue_count": issues1,
+    "contract2_issue_count": issues2,
+
+    "safer_contract": safer,
+    "score_difference": abs(score1 - score2),
+    "comparison_summary": summary,
+}

@@ -1,5 +1,6 @@
 import json
 import os
+import time
 
 from langchain_groq import ChatGroq
 from langchain_core.messages import HumanMessage
@@ -85,9 +86,17 @@ def analyze_document(text):
     {text[:5000]}
     """
 
+    start_time = time.time()
+
     response = llm.invoke([
         HumanMessage(content=prompt)
     ])
+
+    print(
+        "LLM Time:",
+        round(time.time() - start_time, 2),
+        "seconds"
+    )
 
     try:
 

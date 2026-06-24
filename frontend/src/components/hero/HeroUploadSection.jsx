@@ -167,10 +167,83 @@ export default function HeroUploadSection() {
 
             </div>
           <div className="mt-6 bg-white/5 rounded-xl p-5">
+
+        <div className="mt-6 grid md:grid-cols-2 gap-6">
+
+  {/* Contract 1 Issues */}
+  <div className="bg-white/5 rounded-xl p-5">
+
+    <h3 className="text-lg font-semibold mb-4">
+      Contract 1 Issues
+    </h3>
+
+    <div className="space-y-3">
+      {comparison.contract1_issues?.map((issue, index) => (
+  <div
+    key={index}
+    className="bg-red-500/10 border border-red-500/20 rounded-lg px-4 py-3"
+  >
+    <div className="flex justify-between items-center">
+      <span>{issue.name}</span>
+
+      <span
+        className={`px-2 py-1 rounded text-xs ${
+          issue.severity === "High"
+            ? "bg-red-500/20 text-red-400"
+            : issue.severity === "Medium"
+            ? "bg-yellow-500/20 text-yellow-400"
+            : "bg-green-500/20 text-green-400"
+        }`}
+      >
+        {issue.severity}
+      </span>
+    </div>
+  </div>
+))}
+    </div>
+
+  </div>
+
+  {/* Contract 2 Issues */}
+  <div className="bg-white/5 rounded-xl p-5">
+
+    <h3 className="text-lg font-semibold mb-4">
+      Contract 2 Issues
+    </h3>
+
+    <div className="space-y-3">
+      {comparison.contract2_issues?.map((issue, index) => (
+        <div
+          key={index}
+          className="bg-blue-500/10 border border-blue-500/20 rounded-lg px-4 py-3"
+        >
+          <div className="flex justify-between items-center">
+            <span>{issue.name}</span>
+
+            <span
+              className={`px-2 py-1 rounded text-xs ${
+                issue.severity === "High"
+                  ? "bg-blue-500/20 text-blue-400"
+                  : issue.severity === "Medium"
+                  ? "bg-yellow-500/20 text-yellow-400"
+                  : "bg-green-500/20 text-green-400"
+              }`}
+            >
+              {issue.severity}
+            </span>
+          </div>
+        </div>
+      ))}
+    </div>
+
+  </div>
+
+</div>
   <h3 className="text-lg font-semibold mb-3">
     Executive Comparison Summary
   </h3>
 
+  
   <p className="text-slate-300 whitespace-pre-line">
     {comparison.comparison_summary}
   </p>
