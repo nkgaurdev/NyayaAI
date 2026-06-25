@@ -2,9 +2,11 @@ import json
 import os
 import time
 
+
 from langchain_groq import ChatGroq
 from langchain_core.messages import HumanMessage
 from services.rights_service import RIGHTS_MAP
+
 
 SEVERITY_MAP = {
     "Independent Contractor Status": "Medium",
@@ -226,30 +228,20 @@ def analyze_document(text):
         print("Risk Level:", risk_level)
         print("================================\n")
 
-        analysis["appeal_letter"] = f"""Dear Platform Support,
-
-
-        After reviewing this agreement using NyayaAI,
-        I identified several clauses that may affect my
-        rights, protections, and working conditions.
-
-        Key concerns include:
-
-        {chr(10).join(issue_names)}
-
-        I respectfully request clarification regarding
-        these clauses and their practical implications.
-
-        Please provide additional information about
-        worker protections, dispute resolution options,
-        and available support mechanisms.
-
-        Thank you for your assistance.
-
-        Sincerely,
-
-        Worker
-        """
+        analysis["appeal_letter"] = (
+        "Dear Platform Support,\n\n"
+        "After reviewing this agreement using NyayaAI, I identified several clauses "
+        "that may affect my rights, protections, and working conditions.\n\n"
+        "Key concerns include:\n\n"
+        f"{chr(10).join(issue_names)}\n\n"
+        "I respectfully request clarification regarding these clauses and their "
+        "practical implications.\n\n"
+        "Please provide additional information about worker protections, dispute "
+        "resolution options, and available support mechanisms.\n\n"
+        "Thank you for your assistance.\n\n"
+        "Sincerely,\n\n"
+        "Worker"
+)
 
         return analysis
 

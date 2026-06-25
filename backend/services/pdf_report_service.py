@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from reportlab.platypus import (
     SimpleDocTemplate,
     Paragraph,
@@ -18,6 +20,10 @@ def generate_pdf_report(
 
     content = []
 
+    # ---------------------------------
+    # Title
+    # ---------------------------------
+
     content.append(
         Paragraph(
             "NyayaAI Contract Analysis Report",
@@ -25,27 +31,29 @@ def generate_pdf_report(
         )
     )
 
-    content.append(Spacer(1, 12))
+    content.append(
+        Paragraph(
+            "AI-Powered Gig Worker Contract Intelligence",
+            styles["Heading2"]
+        )
+    )
+
+    content.append(Spacer(1, 20))
+
+    # ---------------------------------
+    # Risk Summary
+    # ---------------------------------
 
     content.append(
         Paragraph(
-            f"Risk Score: {analysis.get('risk_score', 0)}",
+            f"<b>Risk Score:</b> {analysis.get('risk_score', 0)} / 100",
             styles["Heading2"]
         )
     )
 
     content.append(
         Paragraph(
-            f"Risk Level: {analysis.get('risk_level', 'Unknown')}",
-            styles["Normal"]
-        )
-    )
-
-    content.append(Spacer(1, 12))
-
-    content.append(
-        Paragraph(
-            analysis.get("summary", ""),
+            f"<b>Risk Level:</b> {analysis.get('risk_level', 'Unknown')}",
             styles["BodyText"]
         )
     )
@@ -54,27 +62,189 @@ def generate_pdf_report(
 
     content.append(
         Paragraph(
+            "Overall Risk Assessment",
+            styles["Heading2"]
+        )
+    )
+
+    content.append(
+        Paragraph(
+            analysis.get("score_reason", ""),
+            styles["BodyText"]
+        )
+    )
+
+    content.append(Spacer(1, 20))
+
+    # ---------------------------------
+    # Executive Summary
+    # ---------------------------------
+
+    content.append(
+        Paragraph(
+            "Executive Summary",
+            styles["Heading2"]
+        )
+    )
+
+    content.append(
+        Paragraph(
+            analysis.get("summary", ""),
+            styles["BodyText"]
+        )
+    )
+
+    content.append(Spacer(1, 20))
+
+    # ---------------------------------
+    # Issues
+    # ---------------------------------
+
+    content.append(
+        Paragraph(
             "Detected Issues",
             styles["Heading2"]
         )
     )
+
+    content.append(Spacer(1, 8))
 
     for issue in analysis.get("issues", []):
 
         content.append(
             Paragraph(
                 f"<b>{issue.get('name')}</b>",
+                styles["Heading3"]
+            )
+        )
+
+        content.append(
+            Paragraph(
+                f"<b>Severity:</b> {issue.get('severity', 'Unknown')}",
                 styles["BodyText"]
             )
         )
 
         content.append(
             Paragraph(
-                issue.get("reason", ""),
+                f"<b>Reason:</b> {issue.get('reason', '')}",
                 styles["BodyText"]
             )
         )
 
-        content.append(Spacer(1, 6))
+        content.append(
+            Paragraph(
+                f"<b>Evidence:</b> {issue.get('evidence', 'Not available')}",
+                styles["BodyText"]
+            )
+        )
+
+        recommendation = issue.get(
+            "recommendation",
+            "Review this clause carefully."
+        )
+
+        content.append(
+            Paragraph(
+                f"<b>Recommendation:</b> {recommendation}",
+                styles["BodyText"]
+            )
+        )
+
+        content.append(Spacer(1, 15))
+
+    # ---------------------------------
+    # Worker Rights
+    # ---------------------------------
+
+    content.append(
+        Paragraph(
+            "Affected Worker Rights",
+            styles["Heading2"]
+        )
+    )
+
+    content.append(Spacer(1, 8))
+
+    for right in analysis.get("affected_rights", []):
+
+        content.append(
+            Paragraph(
+                f"• {right}",
+                styles["BodyText"]
+            )
+        )
+
+    content.append(Spacer(1, 20))
+
+    # ---------------------------------
+    # Plain English
+    # ---------------------------------
+
+    content.append(
+        Paragraph(
+            "Plain English Explanation",
+            styles["Heading2"]
+        )
+    )
+
+    content.append(
+        Paragraph(
+            analysis.get("plain_english", ""),
+            styles["BodyText"]
+        )
+    )
+
+    content.append(Spacer(1, 20))
+
+    # ---------------------------------
+    # Overall Recommendations
+    # ---------------------------------
+
+    content.append(
+        Paragraph(
+            "Overall Recommendations",
+            styles["Heading2"]
+        )
+    )
+
+    content.append(
+        Paragraph(
+            analysis.get(
+                "recommendations",
+                "No recommendations available."
+            ),
+            styles["BodyText"]
+        )
+    )
+
+    content.append(Spacer(1, 25))
+
+    # ---------------------------------
+    # Footer
+    # ---------------------------------
+
+    now = datetime.now()
+
+    content.append(
+        Paragraph(
+            "<b>Generated by NyayaAI</b>",
+            styles["Heading3"]
+        )
+    )
+
+    content.append(
+        Paragraph(
+            "AI Contract Intelligence for Gig Workers",
+            styles["BodyText"]
+        )
+    )
+
+    content.append(
+        Paragraph(
+            f"Generated on: {now.strftime('%d %B %Y %I:%M %p')}",
+            styles["BodyText"]
+        )
+    )
 
     doc.build(content)

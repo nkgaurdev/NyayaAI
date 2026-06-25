@@ -6,6 +6,7 @@ import CompareUploader from "../comparison/CompareUploader";
 export default function HeroUploadSection() {
   const [analysis, setAnalysis] = useState(null);
   const [comparison, setComparison] = useState(null);
+  const [uploadedFile, setUploadedFile] = useState(null);
 
   const [mode, setMode] = useState("analyze");
 
@@ -70,10 +71,13 @@ export default function HeroUploadSection() {
       <div className="max-w-5xl mx-auto mt-8">
 
         {mode === "analyze" ? (
-          <UploadZone setAnalysis={setAnalysis} />
-        ) : (
+          <UploadZone
+              setAnalysis={setAnalysis}
+              setUploadedFile={setUploadedFile}
+/>        ) : (
           <CompareUploader
             setComparison={setComparison}
+            uploadedFile={uploadedFile}
           />
         )}
 
@@ -82,7 +86,10 @@ export default function HeroUploadSection() {
       {/* Analysis Result */}
       {analysis && mode === "analyze" && (
         <div className="max-w-5xl mx-auto mt-16">
-          <AnalysisPreview analysis={analysis} />
+          <AnalysisPreview
+              analysis={analysis}
+              uploadedFile={uploadedFile}
+          />
         </div>
       )}
 

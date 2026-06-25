@@ -1,7 +1,10 @@
 import { useRef, useState } from "react";
 import axios from "axios";
 
-export default function UploadZone({ setAnalysis }) {
+export default function UploadZone({
+  setAnalysis,
+  setUploadedFile
+}) {
   const fileRef = useRef(null);
 
   const [selectedFile, setSelectedFile] = useState(null);
@@ -15,6 +18,7 @@ export default function UploadZone({ setAnalysis }) {
 
     setCompleted(false);
     setSelectedFile(file);
+    setUploadedFile(file);
     setLoading(true);
 
     const formData = new FormData();
@@ -26,7 +30,10 @@ export default function UploadZone({ setAnalysis }) {
         formData
       );
 
-      setAnalysis(response.data.analysis);
+      setAnalysis({
+        ...response.data.analysis,
+        uploadedFile: file,
+      });
       setCompleted(true);
 
       console.log(response.data);
@@ -99,6 +106,7 @@ export default function UploadZone({ setAnalysis }) {
       onClick={() => {
         setSelectedFile(null);
         setAnalysis(null);
+        setUploadedFile(null);
         setCompleted(false);
 
         if (fileRef.current) {

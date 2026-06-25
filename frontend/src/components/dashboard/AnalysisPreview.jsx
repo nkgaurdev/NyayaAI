@@ -1,4 +1,10 @@
-export default function AnalysisPreview({ analysis }) {
+import axios from "axios";
+
+export default function AnalysisPreview({
+  analysis,
+  uploadedFile,
+}) {
+
   return (
     <div className="relative">
       <div className="absolute -top-10 -right-10 w-40 h-40 bg-indigo-500/20 blur-3xl rounded-full" />
@@ -332,9 +338,50 @@ export default function AnalysisPreview({ analysis }) {
 
   <button
   onClick={async () => {
-    alert(
-      "PDF export endpoint is ready. Next we need to send the uploaded file to /download-report."
-    );
+
+    console.log("Uploaded File:", uploadedFile);
+
+    if (!uploadedFile) {
+      alert("No uploaded file found.");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", uploadedFile);
+
+    try {
+
+      const response = await axios.post(
+        "http://127.0.0.1:8000/download-report",
+        formData,
+        {
+          responseType: "blob"
+        }
+      );
+
+      const url = window.URL.createObjectURL(
+        new Blob([response.data])
+      );
+
+      const link = document.createElement("a");
+
+      link.href = url;
+
+      link.download = "NyayaAI_Report.pdf";
+
+      document.body.appendChild(link);
+
+      link.click();
+
+      link.remove();
+
+      window.URL.revokeObjectURL(url);
+
+    } catch (error) {
+      console.error(error);
+      alert("Failed to download report.");
+    }
+
   }}
   className="
     px-4 py-2
@@ -345,7 +392,6 @@ export default function AnalysisPreview({ analysis }) {
 >
   Download PDF Report
 </button>
-
 </div>
         </div>
 
