@@ -1,4 +1,30 @@
 import axios from "axios";
+import RiskDistributionChart from "./RiskDistributionChart";
+const INSIGHTS = {
+  "Independent Contractor Status":
+    "You are classified as an independent contractor instead of an employee.",
+
+  "Lack of Employment Benefits":
+    "Employment benefits such as insurance, paid leave, or provident fund may not apply.",
+
+  "No Guaranteed Income":
+    "The agreement does not guarantee a minimum income or fixed earnings.",
+
+  "Unilateral Account Suspension":
+    "The platform may suspend your account without prior notice.",
+
+  "Rating System":
+    "Your ratings may directly affect your ability to continue receiving work.",
+
+  "Broad Liability Clause":
+    "The agreement places broad legal responsibilities on the worker.",
+
+  "Arbitration Requirement":
+    "Disputes may need to be resolved through arbitration instead of court.",
+
+  "Data Privacy Concerns":
+    "The agreement allows collection and processing of your personal data."
+};
 
 export default function AnalysisPreview({
   analysis,
@@ -28,6 +54,61 @@ export default function AnalysisPreview({
             Online
           </div>
         </div>
+
+
+        {/* Contract Overview */}
+
+<div className="grid md:grid-cols-4 gap-4 mb-8">
+
+  <div className="bg-white/5 rounded-2xl p-5 border border-white/10">
+    <p className="text-slate-400 text-sm">
+      Pages
+    </p>
+
+    <p className="text-3xl font-bold mt-2">
+      {analysis.page_count}
+    </p>
+  </div>
+
+  <div className="bg-white/5 rounded-2xl p-5 border border-white/10">
+    <p className="text-slate-400 text-sm">
+      Issues Detected
+    </p>
+
+    <p className="text-3xl font-bold mt-2">
+      {analysis.issues?.length}
+    </p>
+  </div>
+
+  <div className="bg-white/5 rounded-2xl p-5 border border-white/10">
+    <p className="text-slate-400 text-sm">
+      Worker Rights
+    </p>
+
+    <p className="text-3xl font-bold mt-2">
+      {analysis.affected_rights?.length}
+    </p>
+  </div>
+
+  <div className="bg-white/5 rounded-2xl p-5 border border-white/10">
+    <p className="text-slate-400 text-sm">
+      Overall Risk
+    </p>
+
+    <p
+      className={`text-3xl font-bold mt-2 ${
+        analysis.risk_level === "High"
+          ? "text-red-400"
+          : analysis.risk_level === "Medium"
+          ? "text-yellow-400"
+          : "text-green-400"
+      }`}
+    >
+      {analysis.risk_level}
+    </p>
+  </div>
+
+</div>
 
         {/* Risk Score */}
         <div className="bg-black/30 rounded-2xl p-6 mb-6">
@@ -137,6 +218,47 @@ export default function AnalysisPreview({
             <p className="text-sm">Low</p>
           </div>
         </div>
+
+        <div className="mt-6">
+  <RiskDistributionChart
+    high={analysis?.high_issues || 0}
+    medium={analysis?.medium_issues || 0}
+    low={analysis?.low_issues || 0}
+  />
+</div>
+
+        {/* AI Key Insights */}
+
+<div className="mt-8 bg-indigo-500/10 border border-indigo-500/20 rounded-2xl p-6">
+
+  <h2 className="text-2xl font-bold mb-5">
+    🧠 AI Key Insights
+  </h2>
+
+  <div className="space-y-4">
+
+    {analysis.issues?.map((issue, index) => (
+
+      <div
+        key={index}
+        className="flex items-start gap-3 bg-white/5 rounded-xl p-4"
+      >
+
+        <span className="text-yellow-400 text-xl">
+          ⚠
+        </span>
+
+        <p className="text-slate-200 leading-relaxed">
+          {INSIGHTS[issue.name] || issue.reason}
+        </p>
+
+      </div>
+
+    ))}
+
+  </div>
+
+</div>
 
         {/* Executive Summary */}
         <div className="mt-8">

@@ -9,6 +9,7 @@ export default function UploadZone({
 
   const [selectedFile, setSelectedFile] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [loadingStep, setLoadingStep] = useState(0);
   const [completed, setCompleted] = useState(false);
 
   const handleFileChange = async (event) => {
@@ -20,6 +21,18 @@ export default function UploadZone({
     setSelectedFile(file);
     setUploadedFile(file);
     setLoading(true);
+    
+    setLoadingStep(1);
+
+    setTimeout(() => setLoadingStep(2), 700);
+
+    setTimeout(() => setLoadingStep(3), 1400);
+
+    setTimeout(() => setLoadingStep(4), 2100);
+
+    setTimeout(() => setLoadingStep(5), 2800);
+
+    setTimeout(() => setLoadingStep(6), 3500);
 
     const formData = new FormData();
     formData.append("file", file);
@@ -40,7 +53,7 @@ export default function UploadZone({
     } catch (error) {
       console.error(error);
     }
-
+    setLoadingStep(0);
     setLoading(false);
   };
 
@@ -131,16 +144,42 @@ export default function UploadZone({
 )}
 
         {loading && (
-          <div className="mt-6">
-            <div className="w-full bg-white/10 rounded-full h-3">
-              <div className="bg-blue-500 h-3 rounded-full animate-pulse w-full" />
-            </div>
+  <div className="mt-6 rounded-2xl bg-white/5 p-5 border border-white/10">
 
-            <p className="mt-3 text-blue-400">
-              Analyzing Contract...
-            </p>
-          </div>
-        )}
+    <h3 className="text-lg font-semibold mb-4 text-blue-400">
+      🤖 AI Analysis Pipeline
+    </h3>
+
+    <div className="space-y-1.5">
+
+      <p className={loadingStep >= 1 ? "text-green-400" : "text-slate-500"}>
+        {loadingStep >= 1 ? "✓" : "○"}  Uploading PDF
+      </p>
+
+      <p className={loadingStep >= 2 ? "text-green-400" : "text-slate-500"}>
+        {loadingStep >= 2 ? "📖" : "○"}  Extracting Text
+      </p>
+
+      <p className={loadingStep >= 3 ? "text-green-400" : "text-slate-500"}>
+        {loadingStep >= 3 ? "🧠" : "○"}  Detecting Risk Clauses
+      </p>
+
+      <p className={loadingStep >= 4 ? "text-green-400" : "text-slate-500"}>
+        {loadingStep >= 4 ? "⚖" : "○"}  Mapping Worker Rights
+      </p>
+
+      <p className={loadingStep >= 5 ? "text-green-400" : "text-slate-500"}>
+        {loadingStep >= 5 ? "📊" : "○"}  Calculating Risk Score
+      </p>
+
+      <p className={loadingStep >= 6 ? "text-blue-400 animate-pulse" : "text-slate-500"}>
+        {loadingStep >= 6 ? "⏳" : "○"}  Generating Report
+      </p>
+
+    </div>
+
+  </div>
+)}
 
         {completed && (
           <div className="mt-6 p-4 rounded-xl bg-green-500/10 border border-green-500/20">
