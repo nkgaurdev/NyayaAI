@@ -1,9 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 
-export default function CompareUploader({
-  setComparison,
-}) {
+export default function CompareUploader({ setComparison }) {
   const [file1, setFile1] = useState(null);
   const [file2, setFile2] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -24,7 +22,7 @@ export default function CompareUploader({
     try {
       const response = await axios.post(
         "http://127.0.0.1:8000/compare-contracts",
-        formData
+        formData,
       );
 
       setComparison(response.data.comparison);
@@ -38,14 +36,10 @@ export default function CompareUploader({
 
   return (
     <div className="bg-white/5 rounded-3xl p-8 border border-white/10">
-
       <div className="grid md:grid-cols-2 gap-8">
-
         {/* Contract 1 */}
         <div>
-          <h3 className="font-semibold text-xl mb-4">
-            Contract 1
-          </h3>
+          <h3 className="font-semibold text-xl mb-4">Contract 1</h3>
 
           <label
             className="
@@ -68,14 +62,10 @@ export default function CompareUploader({
               type="file"
               accept=".pdf"
               className="hidden"
-              onChange={(e) =>
-                setFile1(e.target.files[0])
-              }
+              onChange={(e) => setFile1(e.target.files[0])}
             />
 
-            <div className="text-5xl mb-3">
-              📄
-            </div>
+            <div className="text-5xl mb-3">📄</div>
 
             {file1 ? (
               <>
@@ -104,18 +94,14 @@ export default function CompareUploader({
                 </button>
               </>
             ) : (
-              <p className="text-slate-300">
-                Click to upload PDF
-              </p>
+              <p className="text-slate-300">Click to upload PDF</p>
             )}
           </label>
         </div>
 
         {/* Contract 2 */}
         <div>
-          <h3 className="font-semibold text-xl mb-4">
-            Contract 2
-          </h3>
+          <h3 className="font-semibold text-xl mb-4">Contract 2</h3>
 
           <label
             className="
@@ -138,14 +124,10 @@ export default function CompareUploader({
               type="file"
               accept=".pdf"
               className="hidden"
-              onChange={(e) =>
-                setFile2(e.target.files[0])
-              }
+              onChange={(e) => setFile2(e.target.files[0])}
             />
 
-            <div className="text-5xl mb-3">
-              📄
-            </div>
+            <div className="text-5xl mb-3">📄</div>
 
             {file2 ? (
               <>
@@ -174,13 +156,10 @@ export default function CompareUploader({
                 </button>
               </>
             ) : (
-              <p className="text-slate-300">
-                Click to upload PDF
-              </p>
+              <p className="text-slate-300">Click to upload PDF</p>
             )}
           </label>
         </div>
-
       </div>
 
       <div className="flex justify-center mt-8">
@@ -198,12 +177,9 @@ export default function CompareUploader({
             transition
           "
         >
-          {loading
-            ? "Comparing Contracts..."
-            : "Compare Contracts"}
+          {loading ? "Comparing Contracts..." : "Compare Contracts"}
         </button>
       </div>
-
     </div>
   );
 }

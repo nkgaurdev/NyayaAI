@@ -16,17 +16,17 @@ SEVERITY_MAP = {
     "Rating System": "Medium",
     "Broad Liability Clause": "Medium",
     "Arbitration Requirement": "Medium",
-    "Data Privacy Concerns": "Medium"
+    "Data Privacy Concerns": "Medium",
 }
+
 
 def analyze_document(text):
 
-
     llm = ChatGroq(
-    model="llama-3.3-70b-versatile",
-    api_key=os.getenv("GROQ_API_KEY"),
-    temperature=0
-)
+        model="llama-3.3-70b-versatile",
+        api_key=os.getenv("GROQ_API_KEY"),
+        temperature=0,
+    )
 
     prompt = f"""
 
@@ -90,19 +90,16 @@ def analyze_document(text):
 
     start_time = time.time()
 
-    response = llm.invoke([
-        HumanMessage(content=prompt)
-    ])
+    response = llm.invoke([HumanMessage(content=prompt)])
 
-    print(
-        "LLM Time:",
-        round(time.time() - start_time, 2),
-        "seconds"
-    )
+    print("LLM Time:", round(time.time() - start_time, 2), "seconds")
 
     try:
-
         analysis = json.loads(response.content)
+
+        print("\nDetected Issues:")
+        for issue in analysis["issues"]:
+            print("-", issue["name"])
 
         ALLOWED_ISSUES = {
             "Independent Contractor Status",
@@ -112,7 +109,7 @@ def analyze_document(text):
             "Rating System",
             "Broad Liability Clause",
             "Arbitration Requirement",
-            "Data Privacy Concerns"
+            "Data Privacy Concerns",
         }
 
         analysis["issues"] = [
@@ -121,17 +118,11 @@ def analyze_document(text):
             if issue.get("name") in ALLOWED_ISSUES
         ]
 
-
-
         print("\n========== AI ANALYSIS ==========")
         print("Issues Returned:", len(analysis.get("issues", [])))
 
         for issue in analysis.get("issues", []):
-            print(
-                issue.get("name"),
-                "-",
-                issue.get("severity")
-            )
+            print(issue.get("name"), "-", issue.get("severity"))
 
         print("================================\n")
 
@@ -142,26 +133,19 @@ def analyze_document(text):
         affected_rights = set()
 
         for issue in analysis.get("issues", []):
-
             issue_name = issue.get("name", "")
 
             if issue_name in SEVERITY_MAP:
                 issue["severity"] = SEVERITY_MAP[issue_name]
 
-            rights = RIGHTS_MAP.get(
-                issue_name,
-                ["Worker Rights Review Required"]
-            )
+            rights = RIGHTS_MAP.get(issue_name, ["Worker Rights Review Required"])
 
             issue["rights_impact"] = rights
 
             for right in rights:
                 affected_rights.add(right)
 
-            severity = issue.get(
-                "severity",
-                ""
-            ).lower()
+            severity = issue.get("severity", "").lower()
 
             if severity == "high":
                 issue["severity_score"] = 3
@@ -183,11 +167,7 @@ def analyze_document(text):
                     "Review this clause carefully and seek clarification before accepting the agreement."
                 )
 
-        risk_score = (
-    high_count * 25 +
-    medium_count * 15 +
-    low_count * 5
-)
+        risk_score = high_count * 25 + medium_count * 15 + low_count * 5
 
         risk_score = min(risk_score, 100)
 
@@ -211,9 +191,7 @@ def analyze_document(text):
             f"{low_count} Low issues detected"
         )
 
-        analysis["affected_rights"] = sorted(
-            list(affected_rights)
-        )
+        analysis["affected_rights"] = sorted(list(affected_rights))
 
         issue_names = [
             f"• {issue.get('name', 'Unknown Issue')}"
@@ -229,28 +207,27 @@ def analyze_document(text):
         print("================================\n")
 
         analysis["appeal_letter"] = (
-        "Dear Platform Support,\n\n"
-        "After reviewing this agreement using NyayaAI, I identified several clauses "
-        "that may affect my rights, protections, and working conditions.\n\n"
-        "Key concerns include:\n\n"
-        f"{chr(10).join(issue_names)}\n\n"
-        "I respectfully request clarification regarding these clauses and their "
-        "practical implications.\n\n"
-        "Please provide additional information about worker protections, dispute "
-        "resolution options, and available support mechanisms.\n\n"
-        "Thank you for your assistance.\n\n"
-        "Sincerely,\n\n"
-        "Worker"
-)
+            "Dear Platform Support,\n\n"
+            "After reviewing this agreement using NyayaAI, I identified several clauses "
+            "that may affect my rights, protections, and working conditions.\n\n"
+            "Key concerns include:\n\n"
+            f"{chr(10).join(issue_names)}\n\n"
+            "I respectfully request clarification regarding these clauses and their "
+            "practical implications.\n\n"
+            "Please provide additional information about worker protections, dispute "
+            "resolution options, and available support mechanisms.\n\n"
+            "Thank you for your assistance.\n\n"
+            "Sincerely,\n\n"
+            "Worker"
+        )
 
         return analysis
 
     except Exception as e:
-
         print("JSON ERROR:", str(e))
         print("RAW RESPONSE:", response.content)
 
         return {
             "error": "Invalid JSON returned by model",
-            "raw_response": response.content
+            "raw_response": response.content,
         }

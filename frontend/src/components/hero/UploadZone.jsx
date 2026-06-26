@@ -1,10 +1,7 @@
 import { useRef, useState } from "react";
 import axios from "axios";
 
-export default function UploadZone({
-  setAnalysis,
-  setUploadedFile
-}) {
+export default function UploadZone({ setAnalysis, setUploadedFile }) {
   const fileRef = useRef(null);
 
   const [selectedFile, setSelectedFile] = useState(null);
@@ -21,7 +18,7 @@ export default function UploadZone({
     setSelectedFile(file);
     setUploadedFile(file);
     setLoading(true);
-    
+
     setLoadingStep(1);
 
     setTimeout(() => setLoadingStep(2), 700);
@@ -40,7 +37,7 @@ export default function UploadZone({
     try {
       const response = await axios.post(
         "http://127.0.0.1:8000/analyze-pdf",
-        formData
+        formData,
       );
 
       setAnalysis({
@@ -72,9 +69,7 @@ export default function UploadZone({
         transition
       "
       >
-        <h3 className="text-xl font-semibold">
-          Upload Gig Worker Contract
-        </h3>
+        <h3 className="text-xl font-semibold">Upload Gig Worker Contract</h3>
 
         <p className="text-slate-400 mt-2">
           Uber • Swiggy • Zomato • Rapido • Freelancer Agreements
@@ -105,28 +100,23 @@ export default function UploadZone({
         </button>
 
         {selectedFile && (
-  <div className="mt-6 p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
+          <div className="mt-6 p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
+            <p className="text-emerald-400 font-medium">Selected File</p>
 
-    <p className="text-emerald-400 font-medium">
-      Selected File
-    </p>
+            <p className="text-white mt-1 break-all">{selectedFile.name}</p>
 
-    <p className="text-white mt-1 break-all">
-      {selectedFile.name}
-    </p>
+            <button
+              onClick={() => {
+                setSelectedFile(null);
+                setAnalysis(null);
+                setUploadedFile(null);
+                setCompleted(false);
 
-    <button
-      onClick={() => {
-        setSelectedFile(null);
-        setAnalysis(null);
-        setUploadedFile(null);
-        setCompleted(false);
-
-        if (fileRef.current) {
-          fileRef.current.value = "";
-        }
-      }}
-      className="
+                if (fileRef.current) {
+                  fileRef.current.value = "";
+                }
+              }}
+              className="
         mt-4
         px-4
         py-2
@@ -136,56 +126,75 @@ export default function UploadZone({
         hover:bg-red-500/30
         transition
       "
-    >
-      Choose Another Contract
-    </button>
-
-  </div>
-)}
+            >
+              Choose Another Contract
+            </button>
+          </div>
+        )}
 
         {loading && (
-  <div className="mt-6 rounded-2xl bg-white/5 p-5 border border-white/10">
+          <div className="mt-6 rounded-2xl bg-white/5 p-5 border border-white/10">
+            <h3 className="text-lg font-semibold mb-4 text-blue-400">
+              🤖 AI Analysis Pipeline
+            </h3>
 
-    <h3 className="text-lg font-semibold mb-4 text-blue-400">
-      🤖 AI Analysis Pipeline
-    </h3>
+            <div className="space-y-1.5">
+              <p
+                className={
+                  loadingStep >= 1 ? "text-green-400" : "text-slate-500"
+                }
+              >
+                {loadingStep >= 1 ? "✓" : "○"} Uploading PDF
+              </p>
 
-    <div className="space-y-1.5">
+              <p
+                className={
+                  loadingStep >= 2 ? "text-green-400" : "text-slate-500"
+                }
+              >
+                {loadingStep >= 2 ? "📖" : "○"} Extracting Text
+              </p>
 
-      <p className={loadingStep >= 1 ? "text-green-400" : "text-slate-500"}>
-        {loadingStep >= 1 ? "✓" : "○"}  Uploading PDF
-      </p>
+              <p
+                className={
+                  loadingStep >= 3 ? "text-green-400" : "text-slate-500"
+                }
+              >
+                {loadingStep >= 3 ? "🧠" : "○"} Detecting Risk Clauses
+              </p>
 
-      <p className={loadingStep >= 2 ? "text-green-400" : "text-slate-500"}>
-        {loadingStep >= 2 ? "📖" : "○"}  Extracting Text
-      </p>
+              <p
+                className={
+                  loadingStep >= 4 ? "text-green-400" : "text-slate-500"
+                }
+              >
+                {loadingStep >= 4 ? "⚖" : "○"} Mapping Worker Rights
+              </p>
 
-      <p className={loadingStep >= 3 ? "text-green-400" : "text-slate-500"}>
-        {loadingStep >= 3 ? "🧠" : "○"}  Detecting Risk Clauses
-      </p>
+              <p
+                className={
+                  loadingStep >= 5 ? "text-green-400" : "text-slate-500"
+                }
+              >
+                {loadingStep >= 5 ? "📊" : "○"} Calculating Risk Score
+              </p>
 
-      <p className={loadingStep >= 4 ? "text-green-400" : "text-slate-500"}>
-        {loadingStep >= 4 ? "⚖" : "○"}  Mapping Worker Rights
-      </p>
-
-      <p className={loadingStep >= 5 ? "text-green-400" : "text-slate-500"}>
-        {loadingStep >= 5 ? "📊" : "○"}  Calculating Risk Score
-      </p>
-
-      <p className={loadingStep >= 6 ? "text-blue-400 animate-pulse" : "text-slate-500"}>
-        {loadingStep >= 6 ? "⏳" : "○"}  Generating Report
-      </p>
-
-    </div>
-
-  </div>
-)}
+              <p
+                className={
+                  loadingStep >= 6
+                    ? "text-blue-400 animate-pulse"
+                    : "text-slate-500"
+                }
+              >
+                {loadingStep >= 6 ? "⏳" : "○"} Generating Report
+              </p>
+            </div>
+          </div>
+        )}
 
         {completed && (
           <div className="mt-6 p-4 rounded-xl bg-green-500/10 border border-green-500/20">
-            <p className="text-green-400 font-semibold">
-              ✓ Analysis Complete
-            </p>
+            <p className="text-green-400 font-semibold">✓ Analysis Complete</p>
 
             <p className="text-sm text-slate-300 mt-1">
               Contract successfully analyzed by NyayaAI
@@ -194,17 +203,11 @@ export default function UploadZone({
         )}
 
         <div className="grid grid-cols-3 gap-4 mt-8 text-sm">
-          <div className="bg-white/5 rounded-xl p-3">
-            Detect Risks
-          </div>
+          <div className="bg-white/5 rounded-xl p-3">Detect Risks</div>
 
-          <div className="bg-white/5 rounded-xl p-3">
-            Explain Rights
-          </div>
+          <div className="bg-white/5 rounded-xl p-3">Explain Rights</div>
 
-          <div className="bg-white/5 rounded-xl p-3">
-            Generate Actions
-          </div>
+          <div className="bg-white/5 rounded-xl p-3">Generate Actions</div>
         </div>
       </div>
     </div>

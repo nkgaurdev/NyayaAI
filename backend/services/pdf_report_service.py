@@ -1,18 +1,11 @@
 from datetime import datetime
 
-from reportlab.platypus import (
-    SimpleDocTemplate,
-    Paragraph,
-    Spacer
-)
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 
 from reportlab.lib.styles import getSampleStyleSheet
 
 
-def generate_pdf_report(
-    analysis,
-    output_path
-):
+def generate_pdf_report(analysis, output_path):
 
     doc = SimpleDocTemplate(output_path)
 
@@ -26,24 +19,18 @@ def generate_pdf_report(
     # HEADER
     # =====================================================
 
-    content.append(
-        Paragraph(
-            "<font size=24><b>NyayaAI</b></font>",
-            styles["Title"]
-        )
-    )
+    content.append(Paragraph("<font size=24><b>NyayaAI</b></font>", styles["Title"]))
 
     content.append(
         Paragraph(
             "<font size=14><b>AI Contract Risk Assessment Report</b></font>",
-            styles["Heading2"]
+            styles["Heading2"],
         )
     )
 
     content.append(
         Paragraph(
-            f"Generated on: {now.strftime('%d %B %Y %I:%M %p')}",
-            styles["BodyText"]
+            f"Generated on: {now.strftime('%d %B %Y %I:%M %p')}", styles["BodyText"]
         )
     )
 
@@ -53,231 +40,158 @@ def generate_pdf_report(
     # RISK SUMMARY
     # =====================================================
 
-    content.append(
-        Paragraph(
-            "<b>EXECUTIVE RISK SUMMARY</b>",
-            styles["Heading1"]
-        )
-    )
+    content.append(Paragraph("<b>EXECUTIVE RISK SUMMARY</b>", styles["Heading1"]))
 
     content.append(Spacer(1, 8))
 
     content.append(
         Paragraph(
-            f"<b>Risk Score:</b> {analysis.get('risk_score',0)} / 100",
-            styles["BodyText"]
+            f"<b>Risk Score:</b> {analysis.get('risk_score', 0)} / 100",
+            styles["BodyText"],
         )
     )
 
     content.append(
         Paragraph(
-            f"<b>Risk Level:</b> {analysis.get('risk_level','Unknown')}",
-            styles["BodyText"]
+            f"<b>Risk Level:</b> {analysis.get('risk_level', 'Unknown')}",
+            styles["BodyText"],
         )
     )
 
     content.append(
         Paragraph(
-            f"<b>Risk Breakdown:</b> {analysis.get('score_reason','')}",
-            styles["BodyText"]
+            f"<b>Risk Breakdown:</b> {analysis.get('score_reason', '')}",
+            styles["BodyText"],
         )
     )
 
-    content.append(Spacer(1,15))
+    content.append(Spacer(1, 15))
 
     # =====================================================
     # EXECUTIVE SUMMARY
     # =====================================================
 
-    content.append(
-        Paragraph(
-            "<b>EXECUTIVE SUMMARY</b>",
-            styles["Heading1"]
-        )
-    )
+    content.append(Paragraph("<b>EXECUTIVE SUMMARY</b>", styles["Heading1"]))
 
-    content.append(Spacer(1,8))
+    content.append(Spacer(1, 8))
 
-    content.append(
-        Paragraph(
-            analysis.get("summary",""),
-            styles["BodyText"]
-        )
-    )
+    content.append(Paragraph(analysis.get("summary", ""), styles["BodyText"]))
 
-    content.append(Spacer(1,18))
+    content.append(Spacer(1, 18))
 
     # =====================================================
     # ISSUES
     # =====================================================
 
-    content.append(
-        Paragraph(
-            "<b>DETECTED CONTRACT ISSUES</b>",
-            styles["Heading1"]
+    content.append(Paragraph("<b>DETECTED CONTRACT ISSUES</b>", styles["Heading1"]))
+
+    content.append(Spacer(1, 12))
+
+    for index, issue in enumerate(analysis.get("issues", []), start=1):
+        content.append(
+            Paragraph(f"<b>Issue #{index}: {issue.get('name')}</b>", styles["Heading2"])
         )
-    )
 
-    content.append(Spacer(1,12))
-
-    for index, issue in enumerate(
-        analysis.get("issues", []),
-        start=1
-    ):
+        content.append(
+            Paragraph(f"<b>Severity:</b> {issue.get('severity')}", styles["BodyText"])
+        )
 
         content.append(
             Paragraph(
-                f"<b>Issue #{index}: {issue.get('name')}</b>",
-                styles["Heading2"]
+                f"<b>Reason</b><br/>{issue.get('reason', '')}", styles["BodyText"]
             )
         )
 
         content.append(
             Paragraph(
-                f"<b>Severity:</b> {issue.get('severity')}",
-                styles["BodyText"]
+                f"<b>Evidence</b><br/><i>{issue.get('evidence', 'Not available')}</i>",
+                styles["BodyText"],
             )
         )
 
         content.append(
             Paragraph(
-                f"<b>Reason</b><br/>{issue.get('reason','')}",
-                styles["BodyText"]
+                f"<b>Recommendation</b><br/>{issue.get('recommendation', 'Review carefully before accepting.')}",
+                styles["BodyText"],
             )
         )
 
-        content.append(
-            Paragraph(
-                f"<b>Evidence</b><br/><i>{issue.get('evidence','Not available')}</i>",
-                styles["BodyText"]
-            )
-        )
-
-        content.append(
-            Paragraph(
-                f"<b>Recommendation</b><br/>{issue.get('recommendation','Review carefully before accepting.')}",
-                styles["BodyText"]
-            )
-        )
-
-        content.append(Spacer(1,18))
+        content.append(Spacer(1, 18))
 
     # =====================================================
     # RIGHTS
     # =====================================================
 
-    content.append(
-        Paragraph(
-            "<b>AFFECTED WORKER RIGHTS</b>",
-            styles["Heading1"]
-        )
-    )
+    content.append(Paragraph("<b>AFFECTED WORKER RIGHTS</b>", styles["Heading1"]))
 
-    content.append(Spacer(1,8))
+    content.append(Spacer(1, 8))
 
-    for right in analysis.get("affected_rights",[]):
+    for right in analysis.get("affected_rights", []):
+        content.append(Paragraph(f"• {right}", styles["BodyText"]))
 
-        content.append(
-            Paragraph(
-                f"• {right}",
-                styles["BodyText"]
-            )
-        )
-
-    content.append(Spacer(1,18))
+    content.append(Spacer(1, 18))
 
     # =====================================================
     # PLAIN ENGLISH
     # =====================================================
 
-    content.append(
-        Paragraph(
-            "<b>PLAIN ENGLISH EXPLANATION</b>",
-            styles["Heading1"]
-        )
-    )
+    content.append(Paragraph("<b>PLAIN ENGLISH EXPLANATION</b>", styles["Heading1"]))
 
-    content.append(Spacer(1,8))
+    content.append(Spacer(1, 8))
 
-    content.append(
-        Paragraph(
-            analysis.get("plain_english",""),
-            styles["BodyText"]
-        )
-    )
+    content.append(Paragraph(analysis.get("plain_english", ""), styles["BodyText"]))
 
-    content.append(Spacer(1,18))
+    content.append(Spacer(1, 18))
 
     # =====================================================
     # RECOMMENDATIONS
     # =====================================================
 
-    content.append(
-        Paragraph(
-            "<b>OVERALL RECOMMENDATIONS</b>",
-            styles["Heading1"]
-        )
-    )
+    content.append(Paragraph("<b>OVERALL RECOMMENDATIONS</b>", styles["Heading1"]))
 
-    content.append(Spacer(1,8))
+    content.append(Spacer(1, 8))
 
     content.append(
         Paragraph(
-            analysis.get(
-                "recommendations",
-                "No recommendations available."
-            ),
-            styles["BodyText"]
+            analysis.get("recommendations", "No recommendations available."),
+            styles["BodyText"],
         )
     )
 
-    content.append(Spacer(1,20))
+    content.append(Spacer(1, 20))
 
     # =====================================================
     # FINAL VERDICT
     # =====================================================
 
-    content.append(
-        Paragraph(
-            "<b>FINAL VERDICT</b>",
-            styles["Heading1"]
-        )
-    )
+    content.append(Paragraph("<b>FINAL VERDICT</b>", styles["Heading1"]))
 
-    content.append(Spacer(1,8))
+    content.append(Spacer(1, 8))
 
     content.append(
         Paragraph(
             f"""
             Overall Risk Level:
-            <b>{analysis.get('risk_level')}</b>
+            <b>{analysis.get("risk_level")}</b>
 
             <br/><br/>
 
             This report was automatically generated by NyayaAI after analysing the uploaded contract. Review the highlighted clauses carefully before accepting the agreement.
             """,
-            styles["BodyText"]
+            styles["BodyText"],
         )
     )
 
-    content.append(Spacer(1,25))
+    content.append(Spacer(1, 25))
 
     # =====================================================
     # FOOTER
     # =====================================================
 
-    content.append(
-        Paragraph(
-            "<b>Generated by NyayaAI</b>",
-            styles["Heading3"]
-        )
-    )
+    content.append(Paragraph("<b>Generated by NyayaAI</b>", styles["Heading3"]))
 
     content.append(
-        Paragraph(
-            "AI Contract Intelligence for Gig Workers",
-            styles["BodyText"]
-        )
+        Paragraph("AI Contract Intelligence for Gig Workers", styles["BodyText"])
     )
 
     doc.build(content)
