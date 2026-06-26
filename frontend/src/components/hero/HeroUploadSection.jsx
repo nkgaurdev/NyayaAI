@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import UploadZone from "./UploadZone";
 import AnalysisPreview from "../dashboard/AnalysisPreview";
 import CompareUploader from "../comparison/CompareUploader";
@@ -9,6 +9,18 @@ export default function HeroUploadSection() {
   const [uploadedFile, setUploadedFile] = useState(null);
 
   const [mode, setMode] = useState("analyze");
+  const analysisRef = useRef(null);
+
+  useEffect(() => {
+  if (analysis) {
+    setTimeout(() => {
+      analysisRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }, 300);
+  }
+}, [analysis]);
 
   return (
     <section className="py-4">
@@ -29,12 +41,34 @@ export default function HeroUploadSection() {
         </h1>
 
         <p className="text-slate-400 text-lg lg:text-xl mt-6 max-w-3xl mx-auto">
-          Upload contracts, detect hidden risks,
-          understand worker rights, compare agreements,
-          and receive AI-powered legal explanations.
+            Upload contracts, detect hidden risks,
+            understand worker rights, compare agreements,
+            and receive AI-powered legal explanations.
         </p>
 
-      </div>
+        {/* Trust Badges */}
+        <div className="flex flex-wrap justify-center gap-4 mt-8">
+
+          <div className="px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm">
+            ⚡ AI Powered
+          </div>
+
+          <div className="px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm">
+            🔒 Privacy First
+          </div>
+
+          <div className="px-4 py-2 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-sm">
+            📄 PDF Reports
+          </div>
+
+          <div className="px-4 py-2 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-400 text-sm">
+            ⚖ Worker Rights
+          </div>
+
+</div>
+
+</div>
+
 
       {/* Mode Switch */}
       <div className="max-w-3xl mx-auto mt-6">
@@ -83,15 +117,142 @@ export default function HeroUploadSection() {
 
       </div>
 
-      {/* Analysis Result */}
-      {analysis && mode === "analyze" && (
-        <div className="max-w-5xl mx-auto mt-16">
-          <AnalysisPreview
-              analysis={analysis}
-              uploadedFile={uploadedFile}
-          />
+      {/* How NyayaAI Works */}
+      <section className="max-w-6xl mx-auto py-16">
+
+        <h2 className="text-4xl font-bold text-center mb-12">
+          How NyayaAI Works
+        </h2>
+
+        <div className="flex items-center justify-center gap-3 flex-wrap lg:flex-nowrap">
+
+          <div className="bg-white/5 rounded-2xl p-6 border border-white/10 text-center transition-all duration-300 hover:-translate-y-2 hover:bg-white/10 hover:border-blue-400/40 w-56">
+            <div className="text-4xl mb-4">📄</div>
+            <h3 className="font-semibold">Upload</h3>
+            <p className="text-sm text-slate-400 mt-2">
+              Upload any gig worker contract.
+            </p>
+          </div>
+
+          <div className="hidden lg:flex items-center text-2xl text-blue-400/70 semibold">
+            →
+          </div>
+
+          <div className="bg-white/5 rounded-2xl p-6 border border-white/10 text-center transition-all duration-300 hover:-translate-y-2 hover:bg-white/10 hover:border-blue-400/40 w-56">
+            <div className="text-4xl mb-4">🤖</div>
+            <h3 className="font-semibold">Analyze</h3>
+            <p className="text-sm text-slate-400 mt-2">
+              AI detects risky legal clauses.
+            </p>
+          </div>
+
+          <div className="hidden lg:flex items-center text-2xl text-blue-400/70 semibold">
+            →
+          </div>
+
+          <div className="bg-white/5 rounded-2xl p-6 border border-white/10 text-center transition-all duration-300 hover:-translate-y-2 hover:bg-white/10 hover:border-blue-400/40 w-56">
+            <div className="text-4xl mb-4">⚖️</div>
+            <h3 className="font-semibold">Rights</h3>
+            <p className="text-sm text-slate-400 mt-2">
+              Worker rights are identified automatically.
+            </p>
+          </div>
+
+          <div className="hidden lg:flex items-center text-2xl text-blue-400/70 semibold">
+            →
+          </div>
+
+          <div className="bg-white/5 rounded-2xl p-6 border border-white/10 text-center transition-all duration-300 hover:-translate-y-2 hover:bg-white/10 hover:border-blue-400/40 w-56">
+            <div className="text-4xl mb-4">📊</div>
+            <h3 className="font-semibold">Score</h3>
+            <p className="text-sm text-slate-400 mt-2">
+              Receive an AI-powered risk score.
+            </p>
+          </div>
+
+          <div className="hidden lg:flex items-center text-2xl text-blue-400/70 semibold">
+            →
+          </div>
+
+          <div className="bg-white/5 rounded-2xl p-6 border border-white/10 text-center transition-all duration-300 hover:-translate-y-2 hover:bg-white/10 hover:border-blue-400/40 w-56">
+            <div className="text-4xl mb-4">📥</div>
+            <h3 className="font-semibold">Report</h3>
+            <p className="text-sm text-slate-400 mt-2">
+              Download a professional PDF report.
+            </p>
+          </div>
+
         </div>
-      )}
+
+      </section>
+
+      {/* Why Choose NyayaAI */}
+      <section className="max-w-6xl mx-auto py-20">
+
+        <h2 className="text-4xl font-bold text-center mb-4">
+          Why Choose NyayaAI?
+        </h2>
+
+        <p className="text-slate-400 text-center max-w-3xl mx-auto mb-12">
+          Built to help gig workers understand contracts quickly,
+          identify legal risks, and make informed decisions before signing.
+        </p>
+
+        <div className="grid md:grid-cols-4 gap-6">
+
+          <div className="bg-white/5 rounded-2xl p-8 border border-white/10 text-center transition-all duration-300 hover:-translate-y-2 hover:border-blue-400/40">
+            <div className="text-5xl mb-4">⚖️</div>
+            <h3 className="text-2xl font-bold text-blue-400">8</h3>
+            <p className="mt-3 text-slate-300">
+              Risk Categories
+            </p>
+          </div>
+
+          <div className="bg-white/5 rounded-2xl p-8 border border-white/10 text-center transition-all duration-300 hover:-translate-y-2 hover:border-emerald-400/40">
+            <div className="text-5xl mb-4">📄</div>
+            <h3 className="text-2xl font-bold text-emerald-400">
+              PDF
+            </h3>
+            <p className="mt-3 text-slate-300">
+              Professional Reports
+            </p>
+          </div>
+
+          <div className="bg-white/5 rounded-2xl p-8 border border-white/10 text-center transition-all duration-300 hover:-translate-y-2 hover:border-yellow-400/40">
+            <div className="text-5xl mb-4">🤖</div>
+            <h3 className="text-2xl font-bold text-yellow-400">
+              AI
+            </h3>
+            <p className="mt-3 text-slate-300">
+              Contract Intelligence
+            </p>
+          </div>
+
+          <div className="bg-white/5 rounded-2xl p-8 border border-white/10 text-center transition-all duration-300 hover:-translate-y-2 hover:border-purple-400/40">
+            <div className="text-5xl mb-4">⚡</div>
+            <h3 className="text-2xl font-bold text-purple-400">
+              Fast
+            </h3>
+            <p className="mt-3 text-slate-300">
+              Risk Analysis
+            </p>
+          </div>
+
+        </div>
+
+      </section>
+
+      {analysis && mode === "analyze" && (
+  <div
+    ref={analysisRef}
+    className="max-w-5xl mx-auto mt-16"
+  >
+    <AnalysisPreview
+      analysis={analysis}
+      uploadedFile={uploadedFile}
+    />
+  </div>
+)}
 
       {/* Comparison Result */}
       {comparison && mode === "compare" && (
