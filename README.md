@@ -252,7 +252,7 @@ Export analysis results into a structured PDF containing:
 The landing page introduces NyayaAI with a clean interface focused on helping workers understand contracts before signing them.
 
 <p align="center">
-<img src="docs/landing-page.jpg" width="950">
+<img src="docs/screenshots/landing-page.jpg" width="950">
 </p>
 
 ---
@@ -262,7 +262,7 @@ The landing page introduces NyayaAI with a clean interface focused on helping wo
 Users can securely upload text-based PDF contracts for AI analysis.
 
 <p align="center">
-<img src="docs/upload-contract.jpg" width="950">
+<img src="docs/screenshots/upload-contract.jpg" width="950">
 </p>
 
 ---
@@ -281,7 +281,7 @@ NyayaAI provides a transparent analysis workflow showing each processing stage.
 * 📊 Generate AI Insights
 
 <p align="center">
-<img src="docs/analysis-pipeline.jpg" width="950">
+<img src="docs/screenshots/analysis-pipeline.jpg" width="950">
 </p>
 
 ---
@@ -296,7 +296,7 @@ The dashboard provides an overview of the analyzed contract, including:
 * Issue Distribution
 
 <p align="center">
-<img src="docs/risk-dashboard.jpg" width="950">
+<img src="docs/screenshots/risk-dashboard.jpg" width="950">
 </p>
 
 ---
@@ -306,7 +306,7 @@ The dashboard provides an overview of the analyzed contract, including:
 Interactive visualization of detected contractual risks.
 
 <p align="center">
-<img src="docs/risk-distribution.jpg" width="750">
+<img src="docs/screenshots/risk-distribution.jpg" width="750">
 </p>
 
 ---
@@ -316,7 +316,7 @@ Interactive visualization of detected contractual risks.
 Instantly highlights the most significant contractual concerns requiring user attention.
 
 <p align="center">
-<img src="docs/ai-key-insights.jpg" width="950">
+<img src="docs/screenshots/ai-key-insights.jpg" width="950">
 </p>
 
 ---
@@ -326,7 +326,7 @@ Instantly highlights the most significant contractual concerns requiring user at
 Displays the worker rights associated with detected contractual clauses.
 
 <p align="center">
-<img src="docs/worker-rights.jpg" width="950">
+<img src="docs/screenshots/worker-rights.jpg" width="950">
 </p>
 
 ---
@@ -341,11 +341,11 @@ Each detected issue includes:
 * Recommendation
 
 <p align="center">
-<img src="docs/contract-issues-1.jpg" width="950">
+<img src="docs/screenshots/contract-issue-1.jpg" width="950">
 </p>
 
 <p align="center">
-<img src="docs/contract-issues-2.jpg" width="950">
+<img src="docs/screenshots/contract-issue-2.jpg" width="950">
 </p>
 
 ---
@@ -355,7 +355,7 @@ Each detected issue includes:
 Automatically prepares a professional appeal letter based on the analysis results.
 
 <p align="center">
-<img src="docs/appeal-letter.jpg" width="950">
+<img src="docs/screenshots/appeal-letter.jpg" width="950">
 </p>
 
 ---
@@ -372,15 +372,15 @@ Features include:
 * AI Verdict
 
 <p align="center">
-<img src="docs/comparison-overview.jpg" width="950">
+<img src="docs/screenshots/comparison-overview.jpg" width="950">
 </p>
 
 <p align="center">
-<img src="docs/comparison-summary.jpg" width="950">
+<img src="docs/screenshots/comparison-summary.jpg" width="950">
 </p>
 
 <p align="center">
-<img src="docs/comparison-issues.jpg" width="950">
+<img src="docs/screenshots/comparison-issues.jpg" width="950">
 </p>
 
 ---
@@ -390,7 +390,7 @@ Features include:
 Generate a structured AI-powered report summarizing the complete contract analysis.
 
 <p align="center">
-<img src="docs/pdf-report.jpg" width="850">
+<img src="docs/screenshots/pdf-report.jpg" width="850">
 </p>
 
 ---
