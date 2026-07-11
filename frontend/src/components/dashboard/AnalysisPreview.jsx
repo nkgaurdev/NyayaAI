@@ -1,7 +1,5 @@
-import axios from "axios";
+import { jsPDF } from "jspdf";
 import RiskDistributionChart from "./RiskDistributionChart";
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "/api";
 
 const INSIGHTS = {
   "Independent Contractor Status":
@@ -30,6 +28,109 @@ const INSIGHTS = {
 };
 
 export default function AnalysisPreview({ analysis, uploadedFile }) {
+  const downloadPdfReport = () => {
+    if (!analysis) {
+      alert("No analysis available yet.");
+      return;
+    }
+
+    const doc = new jsPDF({ unit: "pt", format: "a4" });
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
+    const margin = 40;
+    let y = 50;
+
+    const ensureSpace = (needed) => {
+      if (y + needed > pageHeight - 40) {
+        doc.addPage();
+        y = 50;
+      }
+    };
+
+    const addHeading = (text, size = 16) => {
+      ensureSpace(20);
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(size);
+      doc.setTextColor(17, 24, 39);
+      doc.text(text, margin, y);
+      y += 20;
+    };
+
+    const addText = (text, size = 11, isBold = false) => {
+      const safeText = text || "";
+      const lines = doc.splitTextToSize(safeText, pageWidth - margin * 2);
+      lines.forEach((line) => {
+        ensureSpace(14);
+        doc.setFont("helvetica", isBold ? "bold" : "normal");
+        doc.setFontSize(size);
+        doc.setTextColor(55, 65, 81);
+        doc.text(line, margin, y);
+        y += 14;
+      });
+    };
+
+    const addBullet = (text) => {
+      const safeText = text || "";
+      const lines = doc.splitTextToSize(
+        `• ${safeText}`,
+        pageWidth - margin * 2,
+      );
+      lines.forEach((line) => {
+        ensureSpace(14);
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(11);
+        doc.setTextColor(55, 65, 81);
+        doc.text(line, margin + 8, y);
+        y += 14;
+      });
+    };
+
+    doc.setFillColor(79, 70, 229);
+    doc.rect(0, 0, pageWidth, 48, "F");
+    doc.setTextColor(255, 255, 255);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(22);
+    doc.text("NyayaAI Contract Risk Report", margin, 30);
+
+    y = 80;
+    addHeading("Contract Summary", 16);
+    addText(`Uploaded File: ${uploadedFile?.name || "Unknown contract"}`);
+    addText(`Risk Score: ${analysis?.risk_score || 0}/100`);
+    addText(`Risk Level: ${analysis?.risk_level || "Unknown"}`);
+    addText(`Summary: ${analysis?.summary || "No summary available."}`);
+    addText(
+      `Plain English: ${analysis?.plain_english || "No explanation available."}`,
+    );
+
+    addHeading("Issues Detected", 16);
+    if (analysis?.issues?.length) {
+      analysis.issues.forEach((issue) => {
+        addBullet(`${issue.name} (${issue.severity || "Unknown"})`);
+        addText(`Reason: ${issue.reason || "No reason provided."}`);
+        addText(
+          `Recommendation: ${issue.recommendation || "Review carefully."}`,
+        );
+      });
+    } else {
+      addText("No issues detected.");
+    }
+
+    addHeading("Worker Rights Impact", 16);
+    if (analysis?.affected_rights?.length) {
+      analysis.affected_rights.forEach((right) => addBullet(right));
+    } else {
+      addText("No rights identified.");
+    }
+
+    addHeading("Recommendations", 16);
+    addText(analysis?.recommendations || "No recommendations available.");
+
+    addHeading("Appeal Letter Draft", 16);
+    addText(analysis?.appeal_letter || "No appeal letter available.");
+
+    doc.save("NyayaAI_Report.pdf");
+  };
+
   return (
     <div className="relative">
       <div className="absolute -top-10 -right-10 w-40 h-40 bg-indigo-500/20 blur-3xl rounded-full" />
@@ -395,60 +496,7 @@ export default function AnalysisPreview({ analysis, uploadedFile }) {
             </button>
 
             <button
-              onClick={async () => {
-                console.log("Uploaded File:", uploadedFile);
-
-                if (!uploadedFile) {
-                  alert("No uploaded file found.");
-                  return;
-                }
-
-                const formData = new FormData();
-                formData.append("file", uploadedFile);
-
-                try {
-                  const response = await axios.post(
-                    `${API_BASE_URL}/download-report`,
-                    formData,
-                    {
-                      responseType: "blob",
-                    },
-                  );
-
-                  const contentType = response.headers?.["content-type"] || "";
-                  if (!contentType.includes("application/pdf")) {
-                    const text = await response.data.text();
-                    throw new Error(
-                      text || "The server did not return a PDF file.",
-                    );
-                  }
-
-                  const url = window.URL.createObjectURL(
-                    new Blob([response.data]),
-                  );
-
-                  const link = document.createElement("a");
-
-                  link.href = url;
-
-                  link.download = "NyayaAI_Report.pdf";
-
-                  document.body.appendChild(link);
-
-                  link.click();
-
-                  link.remove();
-
-                  window.URL.revokeObjectURL(url);
-                } catch (error) {
-                  console.error(error);
-                  alert(
-                    error?.response?.data?.detail ||
-                      error?.message ||
-                      "Failed to download report.",
-                  );
-                }
-              }}
+              onClick={downloadPdfReport}
               className="
     px-4 py-2
     rounded-lg
