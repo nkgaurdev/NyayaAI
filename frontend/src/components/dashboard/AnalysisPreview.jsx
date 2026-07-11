@@ -1,5 +1,8 @@
 import axios from "axios";
 import RiskDistributionChart from "./RiskDistributionChart";
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "/api";
+
 const INSIGHTS = {
   "Independent Contractor Status":
     "You are classified as an independent contractor instead of an employee.",
@@ -405,12 +408,20 @@ export default function AnalysisPreview({ analysis, uploadedFile }) {
 
                 try {
                   const response = await axios.post(
-                    "http://127.0.0.1:8000/download-report",
+                    `${API_BASE_URL}/download-report`,
                     formData,
                     {
                       responseType: "blob",
                     },
                   );
+
+                  const contentType = response.headers?.["content-type"] || "";
+                  if (!contentType.includes("application/pdf")) {
+                    const text = await response.data.text();
+                    throw new Error(
+                      text || "The server did not return a PDF file.",
+                    );
+                  }
 
                   const url = window.URL.createObjectURL(
                     new Blob([response.data]),
@@ -431,7 +442,11 @@ export default function AnalysisPreview({ analysis, uploadedFile }) {
                   window.URL.revokeObjectURL(url);
                 } catch (error) {
                   console.error(error);
-                  alert("Failed to download report.");
+                  alert(
+                    error?.response?.data?.detail ||
+                      error?.message ||
+                      "Failed to download report.",
+                  );
                 }
               }}
               className="

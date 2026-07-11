@@ -1,6 +1,8 @@
 import { useRef, useState } from "react";
 import axios from "axios";
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "/api";
+
 export default function UploadZone({ setAnalysis, setUploadedFile }) {
   const fileRef = useRef(null);
 
@@ -8,6 +10,7 @@ export default function UploadZone({ setAnalysis, setUploadedFile }) {
   const [loading, setLoading] = useState(false);
   const [loadingStep, setLoadingStep] = useState(0);
   const [completed, setCompleted] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleFileChange = async (event) => {
     const file = event.target.files[0];
@@ -18,6 +21,7 @@ export default function UploadZone({ setAnalysis, setUploadedFile }) {
     setSelectedFile(file);
     setUploadedFile(file);
     setLoading(true);
+    setErrorMessage("");
 
     setLoadingStep(1);
 
@@ -36,7 +40,7 @@ export default function UploadZone({ setAnalysis, setUploadedFile }) {
 
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/analyze-pdf",
+        `${API_BASE_URL}/analyze-pdf`,
         formData,
       );
 
@@ -48,6 +52,17 @@ export default function UploadZone({ setAnalysis, setUploadedFile }) {
 
       console.log(response.data);
     } catch (error) {
+      const message =
+        error?.response?.data?.detail ||
+        error?.response?.data?.error ||
+        error?.message ||
+        "Unknown upload error";
+      const friendlyMessage =
+        message.includes("organization_restricted") ||
+        message.includes("restricted")
+          ? "AI analysis is temporarily unavailable. Please try again in a moment or check your connection and API access."
+          : `Upload failed: ${message}`;
+      setErrorMessage(friendlyMessage);
       console.error(error);
     }
     setLoadingStep(0);
@@ -98,6 +113,13 @@ export default function UploadZone({ setAnalysis, setUploadedFile }) {
         >
           {loading ? "Analyzing..." : "Select PDF"}
         </button>
+
+        {errorMessage && (
+          <div className="mt-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20">
+            <p className="text-red-400 font-medium">Upload Error</p>
+            <p className="text-white mt-1 break-all">{errorMessage}</p>
+          </div>
+        )}
 
         {selectedFile && (
           <div className="mt-6 p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20">

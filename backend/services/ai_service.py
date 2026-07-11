@@ -1,11 +1,15 @@
 import json
 import os
 import time
+from pathlib import Path
 
-
+from dotenv import load_dotenv
 from langchain_groq import ChatGroq
 from langchain_core.messages import HumanMessage
+
 from services.rights_service import RIGHTS_MAP
+
+load_dotenv(Path(__file__).resolve().parents[1] / ".env")
 
 
 SEVERITY_MAP = {
@@ -20,15 +24,36 @@ SEVERITY_MAP = {
 }
 
 
+def _fallback_analysis(text, reason=""):
+    return {
+        "summary": "AI analysis is temporarily unavailable.",
+        "issues": [],
+        "worker_rights": "Please review the contract manually.",
+        "recommendations": "Try again in a moment or verify your Groq API key.",
+        "plain_english": "The AI analysis service could not be completed right now.",
+        "risk_score": 0,
+        "risk_level": "Low",
+        "high_issues": 0,
+        "medium_issues": 0,
+        "low_issues": 0,
+        "affected_rights": [],
+        "appeal_letter": "",
+        "error": reason,
+    }
+
+
 def analyze_document(text):
+    if not os.getenv("GROQ_API_KEY"):
+        return _fallback_analysis(text, "Missing GROQ_API_KEY")
 
-    llm = ChatGroq(
-        model="llama-3.3-70b-versatile",
-        api_key=os.getenv("GROQ_API_KEY"),
-        temperature=0,
-    )
+    try:
+        llm = ChatGroq(
+            model="llama-3.3-70b-versatile",
+            api_key=os.getenv("GROQ_API_KEY"),
+            temperature=0,
+        )
 
-    prompt = f"""
+        prompt = f"""
 
 
     You are NyayaAI.
@@ -88,11 +113,12 @@ def analyze_document(text):
     {text[:5000]}
     """
 
-    start_time = time.time()
-
-    response = llm.invoke([HumanMessage(content=prompt)])
-
-    print("LLM Time:", round(time.time() - start_time, 2), "seconds")
+        start_time = time.time()
+        response = llm.invoke([HumanMessage(content=prompt)])
+        print("LLM Time:", round(time.time() - start_time, 2), "seconds")
+    except Exception as exc:
+        print("AI ERROR:", exc)
+        return _fallback_analysis(text, str(exc))
 
     try:
         analysis = json.loads(response.content)

@@ -1,10 +1,13 @@
 import { useState } from "react";
 import axios from "axios";
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "/api";
+
 export default function CompareUploader({ setComparison }) {
   const [file1, setFile1] = useState(null);
   const [file2, setFile2] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleCompare = async () => {
     if (!file1 || !file2) {
@@ -13,6 +16,7 @@ export default function CompareUploader({ setComparison }) {
     }
 
     setLoading(true);
+    setErrorMessage("");
 
     const formData = new FormData();
 
@@ -21,14 +25,19 @@ export default function CompareUploader({ setComparison }) {
 
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/compare-contracts",
+        `${API_BASE_URL}/compare-contracts`,
         formData,
       );
 
       setComparison(response.data.comparison);
     } catch (error) {
+      const message =
+        error?.response?.data?.detail ||
+        error?.response?.data?.error ||
+        error?.message ||
+        "Unknown comparison error";
+      setErrorMessage(`Comparison failed: ${message}`);
       console.error(error);
-      alert("Comparison failed");
     }
 
     setLoading(false);
@@ -36,6 +45,13 @@ export default function CompareUploader({ setComparison }) {
 
   return (
     <div className="bg-white/5 rounded-3xl p-8 border border-white/10">
+      {errorMessage && (
+        <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20">
+          <p className="text-red-400 font-medium">Comparison Error</p>
+          <p className="text-white mt-1 break-all">{errorMessage}</p>
+        </div>
+      )}
+
       <div className="grid md:grid-cols-2 gap-8">
         {/* Contract 1 */}
         <div>
